@@ -1,0 +1,49 @@
+{
+  "name": "cpm-agent-app",
+  "version": "2.1.0",
+  "description": "IBM CPM Program Profile Builder — AI-powered Electron App",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "test": "node testFileProcessing.js"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.10",
+    "docx": "^8.5.0",
+    "mammoth": "^1.12.0",
+    "node-fetch": "^2.7.0",
+    "pdf-parse": "^1.1.4",
+    "pptx2json": "^0.0.10",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.0.0"
+  },
+
+  "build": {
+    "appId": "com.ibm.cpm-assistant",
+    "productName": "CPM Assistant",
+    "directories": { "output": "dist" },
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer/**",
+      "services/**",
+      "templates/**"
+    ],
+      "extraResources": [
+    {
+    "from": "templates",
+    "to": "templates"
+     }
+   ],
+    "mac": { "category": "public.app-category.productivity" },
+    "win": { "target": "nsis" },
+    "linux": { "target": "AppImage" }
+  },
+  "keywords": ["ibm", "cpm", "program-manager", "electron"],
+  "author": "IBM Consulting",
+  "license": "ISC"
+}
