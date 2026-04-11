@@ -1,0 +1,2829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CPM Assistant — IBM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;600&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+/* ── IBM Carbon Design System — White Theme ────────────────────────────────── */
+:root {
+  /* Carbon color tokens — White theme */
+  --cds-background:           #ffffff;
+  --cds-background-hover:     #e8e8e8;
+  --cds-layer-01:             #f4f4f4;
+  --cds-layer-02:             #ffffff;
+  --cds-layer-hover-01:       #e8e8e8;
+  --cds-layer-selected-01:    #e0e0e0;
+  --cds-border-subtle-01:     #e0e0e0;
+  --cds-border-subtle-02:     #c6c6c6;
+  --cds-border-strong-01:     #8d8d8d;
+  --cds-border-interactive:   #0f62fe;
+
+  /* IBM Blue */
+  --cds-interactive:          #0f62fe;
+  --cds-interactive-hover:    #0050e6;
+  --cds-link-primary:         #0f62fe;
+  --cds-focus:                #0f62fe;
+
+  /* Text */
+  --cds-text-primary:         #161616;
+  --cds-text-secondary:       #525252;
+  --cds-text-placeholder:     #a8a8a8;
+  --cds-text-disabled:        #c6c6c6;
+  --cds-text-on-color:        #ffffff;
+  --cds-text-inverse:         #ffffff;
+
+  /* Support */
+  --cds-support-success:      #24a148;
+  --cds-support-warning:      #f1c21b;
+  --cds-support-error:        #da1e28;
+  --cds-support-info:         #0043ce;
+
+  --cds-support-success-bg:   #defbe6;
+  --cds-support-warning-bg:   #fdf6dd;
+  --cds-support-error-bg:     #fff1f1;
+  --cds-support-info-bg:      #edf5ff;
+
+  /* Button */
+  --cds-button-primary:       #0f62fe;
+  --cds-button-primary-hover: #0050e6;
+  --cds-button-secondary:     #393939;
+  --cds-button-danger:        #da1e28;
+  --cds-button-disabled:      #c6c6c6;
+
+  /* Tag */
+  --cds-tag-blue-bg:          #d0e2ff;
+  --cds-tag-blue-text:        #0043ce;
+  --cds-tag-green-bg:         #defbe6;
+  --cds-tag-green-text:       #0e6027;
+  --cds-tag-red-bg:           #fff1f1;
+  --cds-tag-red-text:         #a2191f;
+  --cds-tag-teal-bg:          #d9fbfb;
+  --cds-tag-teal-text:        #005d5d;
+  --cds-tag-purple-bg:        #e8daff;
+  --cds-tag-purple-text:      #491d8b;
+
+  /* IBM Shell */
+  --cds-shell-header-bg:      #161616;
+  --cds-shell-header-text:    #f4f4f4;
+  --cds-shell-side-nav-bg:    #ffffff;
+
+  /* Spacing (Carbon 8px base) */
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px;
+  --s5: 24px; --s6: 32px; --s7: 48px; --s8: 64px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.16px;
+  background: var(--cds-background);
+  color: var(--cds-text-primary);
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── IBM Global Header ──────────────────────────────────────────────────────── */
+.ibm-header {
+  height: 48px;
+  background: var(--cds-shell-header-bg);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--s4);
+  flex-shrink: 0;
+  border-bottom: 1px solid #393939;
+  -webkit-app-region: drag;
+  gap: 0;
+}
+.ibm-header-name {
+  display: flex; align-items: center; gap: var(--s3);
+  -webkit-app-region: no-drag;
+  text-decoration: none;
+  padding: 0 var(--s4);
+  height: 100%;
+  border-left: 3px solid var(--cds-interactive);
+}
+.ibm-header-logo {
+  display: flex; align-items: center; gap: 10px;
+}
+.ibm-header-logo-mark {
+  /* IBM 8-bar logo in pure CSS */
+  display: flex; flex-direction: column; gap: 2px; flex-shrink: 0;
+}
+.ibm-header-logo-mark span {
+  display: block; background: var(--cds-interactive); height: 2px;
+}
+.ibm-header-logo-mark span:nth-child(1) { width: 20px; }
+.ibm-header-logo-mark span:nth-child(2) { width: 16px; margin-left:4px; }
+.ibm-header-logo-mark span:nth-child(3) { width: 20px; }
+.ibm-header-logo-mark span:nth-child(4) { width: 16px; margin-left:4px; }
+.ibm-header-logo-mark span:nth-child(5) { width: 12px; margin-left:8px; }
+.ibm-header-logo-mark span:nth-child(6) { width: 20px; }
+.ibm-header-logo-mark span:nth-child(7) { width: 16px; margin-left:4px; }
+.ibm-header-logo-mark span:nth-child(8) { width: 20px; }
+.ibm-header-logo-wordmark {
+  font-size: 16px; font-weight: 600; color: #fff;
+  letter-spacing: 0.12em;
+}
+.ibm-header-divider {
+  width: 1px; height: 20px;
+  background: rgba(255,255,255,0.25); margin: 0 14px; flex-shrink: 0;
+}
+.ibm-header-product-stack {
+  display: flex; flex-direction: column; gap: 1px;
+}
+.ibm-header-product-name {
+  font-size: 14px; font-weight: 600; color: #fff;
+  letter-spacing: 0.16px; line-height: 1.2;
+}
+.ibm-header-product-sub {
+  font-size: 10px; font-weight: 400; color: #a8c7fa;
+  letter-spacing: 0.32px; line-height: 1.2;
+  display: flex; align-items: center; gap: 5px;
+}
+.ibm-header-powered-dot {
+  width: 4px; height: 4px; border-radius: 50%;
+  background: #a8c7fa; flex-shrink: 0;
+}
+.ibm-header-ica-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 10px; font-weight: 600; letter-spacing: 0.32px;
+  color: #a8c7fa; white-space: nowrap;
+}
+.ibm-header-ica-icon {
+  width: 12px; height: 12px; position: relative; flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+/* Agentic Studio hexagon icon in CSS */
+.ica-hex {
+  width: 12px; height: 12px;
+  background: linear-gradient(135deg, #4589ff 0%, #0f62fe 100%);
+  clip-path: polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+  display: flex; align-items: center; justify-content: center;
+}
+.ica-hex::after {
+  content: ""; width: 5px; height: 5px;
+  background: #fff; border-radius: 50%;
+}
+.ibm-header-right {
+  margin-left: auto;
+  display: flex; align-items: center; gap: var(--s3);
+  -webkit-app-region: no-drag;
+  padding-right: var(--s2);
+}
+
+/* Connection status tag */
+.conn-tag {
+  display: inline-flex; align-items: center; gap: var(--s2);
+  font-size: 12px; font-weight: 400; padding: 3px 10px;
+  border-radius: 0; /* Carbon tags are sharp */
+  letter-spacing: 0.32px;
+}
+.conn-tag.connected    { background: var(--cds-tag-green-bg); color: var(--cds-tag-green-text); }
+.conn-tag.disconnected { background: var(--cds-tag-red-bg);   color: var(--cds-tag-red-text); }
+.conn-tag.connecting   { background: var(--cds-tag-blue-bg);  color: var(--cds-tag-blue-text); }
+.conn-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.conn-tag.connected .conn-dot    { background: var(--cds-support-success); }
+.conn-tag.disconnected .conn-dot { background: var(--cds-support-error); }
+.conn-tag.connecting .conn-dot   { background: var(--cds-interactive); animation: blink .8s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+.header-btn {
+  height: 48px; padding: 0 var(--s4);
+  background: none; border: none;
+  color: #c6c6c6; font-family: inherit; font-size: 14px;
+  cursor: pointer; letter-spacing: 0.16px; transition: background .1s;
+}
+.header-btn:hover { background: #2d2d2d; color: #f4f4f4; }
+
+/* ── Layout ── */
+.app { display: flex; flex: 1; overflow: hidden; }
+
+/* ── IBM Side Nav ───────────────────────────────────────────────────────────── */
+.side-nav {
+  width: 256px;
+  background: var(--cds-shell-side-nav-bg);
+  border-right: 1px solid var(--cds-border-subtle-01);
+  display: flex; flex-direction: column;
+  flex-shrink: 0; overflow-y: auto;
+}
+.side-nav-header {
+  padding: var(--s4) var(--s4) var(--s3);
+  border-bottom: 1px solid var(--cds-border-subtle-01);
+}
+.side-nav-header-label {
+  font-size: 12px; font-weight: 600; letter-spacing: 0.32px;
+  text-transform: uppercase; color: var(--cds-text-secondary);
+}
+.side-nav-items { padding: var(--s2) 0; }
+
+.nav-item {
+  display: flex; align-items: center; gap: var(--s3);
+  padding: 12px var(--s4); width: 100%;
+  background: none; border: none; text-align: left;
+  font-family: inherit; font-size: 14px; font-weight: 400;
+  letter-spacing: 0.16px; cursor: default;
+  color: var(--cds-text-secondary);
+  border-left: 3px solid transparent;
+  transition: background .1s;
+}
+.nav-item.active {
+  background: var(--cds-layer-selected-01);
+  color: var(--cds-text-primary);
+  border-left-color: var(--cds-interactive);
+  font-weight: 600; cursor: pointer;
+}
+.nav-item.done {
+  color: var(--cds-support-success);
+  cursor: pointer;
+}
+.nav-item.done:hover { background: var(--cds-layer-hover-01); }
+.nav-item.locked { opacity: 0.4; }
+
+.nav-num {
+  width: 20px; height: 20px; border-radius: 50%;
+  font-size: 11px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; background: var(--cds-layer-01);
+  color: var(--cds-text-secondary); border: 1px solid var(--cds-border-subtle-02);
+}
+.nav-item.active .nav-num { background: var(--cds-interactive); color: #fff; border-color: var(--cds-interactive); }
+.nav-item.done   .nav-num { background: var(--cds-support-success); color: #fff; border-color: var(--cds-support-success); font-size: 11px; }
+.nav-label { font-size: 14px; }
+.nav-sub   { font-size: 12px; color: var(--cds-text-secondary); margin-top: 1px; letter-spacing: 0.32px; }
+
+.side-nav-divider { height: 1px; background: var(--cds-border-subtle-01); margin: var(--s2) 0; }
+
+/* Log panel */
+.log-panel { padding: var(--s3) var(--s4); border-top: 1px solid var(--cds-border-subtle-01); }
+.log-panel-title {
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.32px; color: var(--cds-text-secondary);
+  margin-bottom: var(--s2); display: flex; justify-content: space-between; align-items: center;
+}
+.log-panel-title button {
+  font-size: 11px; background: none; border: none;
+  color: var(--cds-link-primary); cursor: pointer; font-family: inherit;
+}
+.log-scroll {
+  height: 80px; overflow-y: auto;
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px; line-height: 16px;
+}
+.log-line { color: var(--cds-text-secondary); margin-bottom: 1px; word-break: break-all; }
+.log-line.error { color: var(--cds-support-error); }
+.log-line.warn  { color: #8e6a00; }
+.log-line.agent { color: var(--cds-interactive); }
+
+.side-nav-footer {
+  padding: var(--s3) var(--s4);
+  border-top: 1px solid var(--cds-border-subtle-01);
+  margin-top: auto;
+}
+.side-nav-footer button {
+  font-size: 14px; color: var(--cds-link-primary);
+  background: none; border: none; font-family: inherit; cursor: pointer;
+  display: flex; align-items: center; gap: var(--s2); letter-spacing: 0.16px;
+  padding: var(--s2) 0;
+}
+.side-nav-footer button:hover { text-decoration: underline; }
+
+/* ── Main content ───────────────────────────────────────────────────────────── */
+.main { flex: 1; overflow-y: auto; background: var(--cds-background); }
+.page { display: none; }
+.page.active { display: block; }
+
+.page-header {
+  background: var(--cds-layer-01);
+  border-bottom: 1px solid var(--cds-border-subtle-01);
+  padding: var(--s6) var(--s7);
+}
+.page-title {
+  font-size: 28px; font-weight: 300; line-height: 36px;
+  letter-spacing: 0; color: var(--cds-text-primary); margin-bottom: var(--s2);
+}
+.page-sub {
+  font-size: 14px; font-weight: 400; line-height: 20px;
+  letter-spacing: 0.16px; color: var(--cds-text-secondary); max-width: 600px;
+}
+
+.page-body { padding: var(--s6) var(--s7); }
+
+/* ── Carbon Tile / Card ─────────────────────────────────────────────────────── */
+.cds-tile {
+  background: var(--cds-layer-01);
+  border: 1px solid var(--cds-border-subtle-01);
+  padding: var(--s5);
+  margin-bottom: var(--s4);
+}
+.cds-tile-title {
+  font-size: 14px; font-weight: 600; letter-spacing: .16px;
+  color: var(--cds-text-primary); margin-bottom: var(--s3);
+}
+
+/* ── Upload ─────────────────────────────────────────────────────────────────── */
+.upload-tile {
+  border: 1px dashed var(--cds-border-strong-01);
+  background: var(--cds-layer-01);
+  padding: var(--s7) var(--s6);
+  text-align: center; cursor: pointer; position: relative;
+  transition: background .1s, border-color .1s;
+}
+.upload-tile:hover, .upload-tile.over {
+  background: var(--cds-layer-hover-01);
+  border-color: var(--cds-interactive);
+}
+.upload-tile input[type="file"] { position:absolute; inset:0; opacity:0; cursor:pointer; }
+.upload-icon {
+  width: 48px; height: 48px; margin: 0 auto var(--s4);
+  background: var(--cds-tag-blue-bg);
+  display: flex; align-items: center; justify-content: center; font-size: 22px;
+}
+.upload-tile h3 { font-size: 16px; font-weight: 600; margin-bottom: var(--s2); }
+.upload-tile p  { font-size: 14px; color: var(--cds-text-secondary); }
+.file-types { display: flex; gap: var(--s2); justify-content: center; flex-wrap: wrap; margin-top: var(--s4); }
+.file-type-tag {
+  font-size: 12px; font-weight: 400; padding: 2px 8px;
+  background: var(--cds-layer-02); border: 1px solid var(--cds-border-subtle-02);
+  color: var(--cds-text-secondary); letter-spacing: 0.32px;
+}
+
+.file-list { margin-top: var(--s4); }
+.file-row {
+  display: flex; align-items: center; gap: var(--s3);
+  padding: var(--s3) var(--s4);
+  background: var(--cds-layer-01);
+  border-bottom: 1px solid var(--cds-border-subtle-01);
+}
+.file-row:first-child { border-top: 1px solid var(--cds-border-subtle-01); }
+.file-ext-tag {
+  font-size: 10px; font-weight: 600; padding: 2px 6px;
+  letter-spacing: 0.32px; text-transform: uppercase;
+  min-width: 36px; text-align: center;
+}
+.ext-pdf  { background: #fff0f7; color: #9f1853; border: 1px solid #ffafd2; }
+.ext-docx { background: var(--cds-tag-blue-bg); color: var(--cds-tag-blue-text); border: 1px solid #a6c8ff; }
+.ext-pptx { background: #fff2e8; color: #8a3800; border: 1px solid #ffd9c0; }
+.ext-xlsx { background: var(--cds-tag-green-bg); color: var(--cds-tag-green-text); border: 1px solid #a7f0ba; }
+.ext-csv  { background: var(--cds-tag-teal-bg); color: var(--cds-tag-teal-text); border: 1px solid #9ef0f0; }
+.ext-txt  { background: var(--cds-layer-01); color: var(--cds-text-secondary); border: 1px solid var(--cds-border-subtle-02); }
+.file-name { font-size: 14px; flex: 1; }
+.file-size { font-size: 12px; color: var(--cds-text-secondary); }
+.file-del  {
+  width: 32px; height: 32px; background: none; border: none;
+  cursor: pointer; color: var(--cds-text-secondary); font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .1s;
+}
+.file-del:hover { background: var(--cds-support-error-bg); color: var(--cds-support-error); }
+
+/* ── Carbon Buttons ─────────────────────────────────────────────────────────── */
+.cds-btn {
+  display: inline-flex; align-items: center; gap: var(--s2);
+  padding: 14px var(--s5) 14px var(--s4);
+  border: none; cursor: pointer;
+  font-family: inherit; font-size: 14px; font-weight: 400;
+  letter-spacing: 0.16px; line-height: 20px;
+  transition: background .1s; text-decoration: none;
+}
+.cds-btn-primary   { background: var(--cds-button-primary); color: #fff; }
+.cds-btn-primary:hover { background: var(--cds-button-primary-hover); }
+.cds-btn-primary:disabled { background: var(--cds-button-disabled); color: #8d8d8d; pointer-events: none; }
+.cds-btn-secondary { background: var(--cds-button-secondary); color: #fff; }
+.cds-btn-secondary:hover { background: #474747; }
+.cds-btn-ghost     { background: transparent; color: var(--cds-interactive); border: 1px solid transparent; }
+.cds-btn-ghost:hover { background: var(--cds-layer-hover-01); }
+.cds-btn-danger    { background: var(--cds-button-danger); color: #fff; }
+.cds-btn-icon { font-size: 18px; margin-left: var(--s2); }
+
+.btn-set { display: flex; gap: 1px; margin-top: var(--s6); align-items: center; flex-wrap: wrap; gap: var(--s3); }
+
+/* ── Progress bar (Carbon) ──────────────────────────────────────────────────── */
+.cds-progress-bar {
+  height: 8px; background: var(--cds-layer-01);
+  border: 1px solid var(--cds-border-subtle-01); margin: var(--s4) 0;
+}
+.cds-progress-fill {
+  height: 100%; background: var(--cds-interactive);
+  transition: width .4s ease;
+}
+.cds-progress-fill.complete { background: var(--cds-support-success); }
+
+.status-row { display: flex; align-items: center; gap: var(--s3); font-size: 14px; color: var(--cds-text-secondary); }
+.spinner { width: 16px; height: 16px; border: 2px solid var(--cds-border-subtle-02); border-top-color: var(--cds-interactive); border-radius: 50%; animation: spin .7s linear infinite; flex-shrink: 0; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--cds-interactive); animation: blink 1.2s infinite; flex-shrink: 0; }
+
+.step-log { margin-top: var(--s4); display: flex; flex-direction: column; gap: 4px; }
+.step-log-line {
+  font-size: 12px; color: var(--cds-text-secondary);
+  display: flex; align-items: flex-start; gap: var(--s2);
+  font-family: 'IBM Plex Mono', monospace;
+}
+.step-log-line .ts { color: var(--cds-text-placeholder); flex-shrink: 0; }
+.step-log-line.agent { color: var(--cds-interactive); }
+.step-log-line.error { color: var(--cds-support-error); }
+.step-log-line.success { color: var(--cds-support-success); }
+
+/* ICA connection notice */
+.ica-notice {
+  background: var(--cds-support-info-bg);
+  border-left: 3px solid var(--cds-interactive);
+  padding: var(--s3) var(--s4);
+  margin-bottom: var(--s4);
+  display: none; align-items: center; gap: var(--s3);
+  font-size: 14px; color: var(--cds-text-primary);
+}
+.ica-notice.show { display: flex; }
+
+/* ── Carbon Notifications ───────────────────────────────────────────────────── */
+.cds-notification {
+  padding: var(--s4); margin-bottom: var(--s4);
+  display: flex; gap: var(--s3); align-items: flex-start;
+  font-size: 14px; line-height: 20px;
+}
+.cds-notification-info    { background: var(--cds-support-info-bg);    border-left: 3px solid var(--cds-interactive); }
+.cds-notification-success { background: var(--cds-support-success-bg); border-left: 3px solid var(--cds-support-success); }
+.cds-notification-warning { background: var(--cds-support-warning-bg); border-left: 3px solid var(--cds-support-warning); }
+.cds-notification-error   { background: var(--cds-support-error-bg);   border-left: 3px solid var(--cds-support-error); }
+.notif-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.notif-body { flex: 1; }
+.notif-title { font-weight: 600; margin-bottom: 2px; }
+
+/* ── Carbon Data Table style for detected fields ────────────────────────────── */
+.cds-data-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.cds-data-table th {
+  background: var(--cds-layer-01); padding: var(--s3) var(--s4);
+  text-align: left; font-size: 12px; font-weight: 600;
+  letter-spacing: 0.32px; text-transform: uppercase;
+  color: var(--cds-text-secondary);
+  border-bottom: 2px solid var(--cds-border-subtle-02);
+}
+.cds-data-table td {
+  padding: 12px var(--s4);
+  border-bottom: 1px solid var(--cds-border-subtle-01);
+  color: var(--cds-text-primary); vertical-align: top;
+}
+.cds-data-table tr:hover td { background: var(--cds-layer-hover-01); }
+
+.conf-tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 600; padding: 2px 8px;
+  letter-spacing: 0.32px;
+}
+.conf-high   { background: var(--cds-tag-green-bg); color: var(--cds-tag-green-text); }
+.conf-medium { background: var(--cds-support-warning-bg); color: #8e6a00; }
+.conf-low    { background: var(--cds-tag-red-bg); color: var(--cds-tag-red-text); }
+
+/* ── Quality meter ──────────────────────────────────────────────────────────── */
+.quality-row { display: flex; align-items: center; gap: var(--s4); margin-bottom: var(--s5); }
+.quality-label { font-size: 14px; font-weight: 600; color: var(--cds-text-primary); width: 140px; flex-shrink: 0; }
+.quality-track { flex: 1; height: 8px; background: var(--cds-layer-01); border: 1px solid var(--cds-border-subtle-01); }
+.quality-fill  { height: 100%; transition: width .5s ease; }
+.quality-fill.high   { background: var(--cds-support-success); }
+.quality-fill.medium { background: var(--cds-support-warning); }
+.quality-fill.low    { background: var(--cds-support-error); }
+.quality-pct { font-size: 14px; font-weight: 600; width: 40px; text-align: right; }
+.quality-pct.high   { color: var(--cds-support-success); }
+.quality-pct.medium { color: #8e6a00; }
+.quality-pct.low    { color: var(--cds-support-error); }
+
+/* ── Project cards ──────────────────────────────────────────────────────────── */
+.proj-grid { display: flex; flex-direction: column; gap: 1px; margin-bottom: var(--s6); }
+.proj-card {
+  background: var(--cds-layer-01);
+  border: 1px solid var(--cds-border-subtle-01);
+  padding: var(--s5); cursor: pointer;
+  transition: background .1s, border-color .1s;
+  position: relative; display: flex; gap: var(--s4);
+}
+.proj-card:hover { background: var(--cds-layer-hover-01); }
+.proj-card.selected {
+  background: var(--cds-layer-02);
+  border: 2px solid var(--cds-interactive);
+  outline: 1px solid var(--cds-interactive);
+}
+.proj-card.recommended { border-left: 4px solid var(--cds-support-success); }
+.proj-card.recommended.selected { border: 2px solid var(--cds-interactive); outline: 1px solid var(--cds-interactive); }
+
+.proj-radio {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid var(--cds-border-strong-01);
+  flex-shrink: 0; margin-top: 2px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .1s;
+}
+.proj-card.selected .proj-radio {
+  border-color: var(--cds-interactive);
+  background: var(--cds-interactive);
+}
+.proj-card.selected .proj-radio::after {
+  content: ''; width: 8px; height: 8px; border-radius: 50%; background: #fff;
+}
+
+.proj-body { flex: 1; }
+.proj-title { font-size: 16px; font-weight: 600; line-height: 22px; margin-bottom: var(--s2); }
+.proj-meta  { display: flex; flex-wrap: wrap; gap: var(--s4); margin-bottom: var(--s3); }
+.proj-meta-item { font-size: 12px; color: var(--cds-text-secondary); display: flex; align-items: center; gap: 4px; }
+.proj-summary { font-size: 14px; color: var(--cds-text-secondary); line-height: 20px; margin-bottom: var(--s3); }
+
+.suit-row { display: flex; align-items: center; gap: var(--s3); }
+.suit-label { font-size: 12px; font-weight: 600; letter-spacing: 0.32px; width: 50px; }
+.suit-label.high   { color: var(--cds-support-success); }
+.suit-label.medium { color: #8e6a00; }
+.suit-label.low    { color: var(--cds-support-error); }
+.suit-track { flex: 1; height: 4px; background: var(--cds-border-subtle-01); }
+.suit-fill  { height: 100%; }
+.suit-fill.high   { background: var(--cds-support-success); width: 100%; }
+.suit-fill.medium { background: var(--cds-support-warning); width: 60%; }
+.suit-fill.low    { background: var(--cds-support-error);   width: 25%; }
+.suit-reason { font-size: 12px; color: var(--cds-text-secondary); margin-top: 4px; }
+
+.rec-badge {
+  position: absolute; top: var(--s3); right: var(--s4);
+  font-size: 11px; font-weight: 600; padding: 2px 8px;
+  background: var(--cds-tag-green-bg); color: var(--cds-tag-green-text);
+  letter-spacing: 0.32px;
+}
+
+/* ── Carbon Form fields ─────────────────────────────────────────────────────── */
+.cds-form-item { margin-bottom: var(--s5); }
+.cds-label {
+  display: block; font-size: 12px; font-weight: 600;
+  letter-spacing: 0.32px; color: var(--cds-text-secondary);
+  margin-bottom: var(--s2); text-transform: uppercase;
+}
+.cds-label .req { color: var(--cds-support-error); margin-left: 2px; }
+.cds-helper { font-size: 12px; color: var(--cds-text-secondary); margin-bottom: var(--s2); line-height: 16px; }
+
+.cds-input, .cds-textarea, .cds-select {
+  width: 100%; padding: 11px var(--s4);
+  background: var(--cds-layer-01);
+  border: none; border-bottom: 1px solid var(--cds-border-strong-01);
+  color: var(--cds-text-primary); font-family: inherit; font-size: 14px;
+  line-height: 20px; letter-spacing: 0.16px; outline: none;
+  transition: border-bottom-color .1s;
+}
+.cds-input:focus, .cds-textarea:focus, .cds-select:focus {
+  border-bottom: 2px solid var(--cds-focus);
+  background: var(--cds-layer-02);
+}
+.cds-input::placeholder, .cds-textarea::placeholder { color: var(--cds-text-placeholder); }
+.cds-textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
+.cds-select option { background: var(--cds-layer-01); }
+
+/* Question card (gap form) */
+.q-card {
+  background: var(--cds-layer-01);
+  border-bottom: 1px solid var(--cds-border-subtle-01);
+  padding: var(--s5);
+  transition: background .1s;
+}
+.q-card:first-of-type { border-top: 1px solid var(--cds-border-subtle-01); }
+.q-card:focus-within  { background: var(--cds-layer-02); border-left: 3px solid var(--cds-interactive); }
+
+.q-header { display: flex; align-items: flex-start; gap: var(--s3); margin-bottom: var(--s3); }
+.q-num {
+  width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
+  background: var(--cds-interactive); color: #fff;
+  font-size: 11px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 2px;
+}
+.q-meta { flex: 1; }
+.q-section-tag {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.32px;
+  text-transform: uppercase; margin-bottom: 4px; display: inline-block;
+}
+.q-section-tag.candidate_info  { color: var(--cds-interactive); }
+.q-section-tag.project_scope   { color: var(--cds-support-success); }
+.q-section-tag.candidate_scope { color: #7c3c96; }
+.q-section-tag.financial       { color: #8e6a00; }
+.q-section-tag.complexity      { color: #b45309; }
+.q-section-tag.outcomes        { color: var(--cds-support-success); }
+.q-section-tag.leadership      { color: #c25000; }
+.q-text { font-size: 14px; font-weight: 600; color: var(--cds-text-primary); line-height: 20px; }
+.q-hint { font-size: 12px; color: var(--cds-text-secondary); margin-top: 4px; line-height: 18px; }
+.priority-tag { font-size: 11px; font-weight: 600; padding: 2px 8px; flex-shrink: 0; letter-spacing: 0.32px; }
+.priority-critical  { background: var(--cds-tag-red-bg);    color: var(--cds-tag-red-text); }
+.priority-important { background: var(--cds-support-warning-bg); color: #8e6a00; }
+.priority-optional  { background: var(--cds-layer-01); color: var(--cds-text-secondary); border: 1px solid var(--cds-border-subtle-02); }
+
+/* ── Section heading ────────────────────────────────────────────────────────── */
+.section-heading {
+  font-size: 12px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.32px; color: var(--cds-text-secondary);
+  padding: var(--s3) 0 var(--s2);
+  border-bottom: 1px solid var(--cds-border-subtle-01);
+  margin-bottom: var(--s4);
+}
+
+/* ── Review / Structured list ───────────────────────────────────────────────── */
+.review-group {
+  background: var(--cds-background);
+  border: 1px solid var(--cds-border-subtle-01);
+  margin-bottom: var(--s4);
+}
+.review-group-title {
+  background: var(--cds-layer-01);
+  padding: var(--s3) var(--s4);
+  font-size: 14px; font-weight: 600;
+  border-bottom: 1px solid var(--cds-border-subtle-01);
+  letter-spacing: 0.16px;
+}
+.review-row {
+  display: flex; gap: var(--s4); padding: var(--s3) var(--s4);
+  border-bottom: 1px solid var(--cds-border-subtle-01); font-size: 14px;
+}
+.review-row:last-child { border-bottom: none; }
+.review-key   { font-weight: 600; color: var(--cds-text-secondary); min-width: 180px; flex-shrink: 0; font-size: 12px; text-transform: uppercase; letter-spacing: 0.32px; padding-top: 2px; }
+.review-val   { color: var(--cds-text-primary); line-height: 20px; white-space: pre-wrap; }
+
+/* ── Eligibility / Scoring ──────────────────────────────────────────────────── */
+.eligibility-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s4); margin-bottom: var(--s5); }
+.elig-card {
+  background: var(--cds-layer-01);
+  border: 1px solid var(--cds-border-subtle-01);
+  padding: var(--s4);
+}
+.elig-card-title { font-size: 12px; font-weight: 600; letter-spacing: 0.32px; text-transform: uppercase; color: var(--cds-text-secondary); margin-bottom: var(--s2); }
+.elig-result { display: flex; align-items: center; gap: var(--s2); font-size: 14px; font-weight: 600; }
+.elig-pass { color: var(--cds-support-success); }
+.elig-warn { color: #8e6a00; }
+.elig-fail { color: var(--cds-support-error); }
+.elig-note { font-size: 12px; color: var(--cds-text-secondary); margin-top: 4px; }
+
+/* Score breakdown */
+.score-section { margin-bottom: var(--s5); }
+.score-item { display: flex; align-items: center; gap: var(--s4); padding: var(--s3) 0; border-bottom: 1px solid var(--cds-border-subtle-01); }
+.score-label { font-size: 14px; font-weight: 400; flex: 1; }
+.score-bar-track { width: 160px; height: 8px; background: var(--cds-layer-01); border: 1px solid var(--cds-border-subtle-01); flex-shrink: 0; }
+.score-bar-fill  { height: 100%; }
+.score-bar-fill.s-high   { background: var(--cds-support-success); }
+.score-bar-fill.s-medium { background: var(--cds-support-warning); }
+.score-bar-fill.s-low    { background: var(--cds-support-error); }
+.score-val { font-size: 14px; font-weight: 600; width: 50px; text-align: right; }
+
+/* ── Modal ──────────────────────────────────────────────────────────────────── */
+.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; align-items:center; justify-content:center; z-index:200; }
+.modal-overlay.open { display:flex; }
+.cds-modal {
+  background: var(--cds-layer-02);
+  width: 480px; max-width: 90vw; max-height: 80vh; overflow-y: auto;
+  box-shadow: 0 12px 40px rgba(0,0,0,.2);
+}
+.modal-header { background: var(--cds-layer-01); padding: var(--s5); border-bottom: 1px solid var(--cds-border-subtle-01); }
+.modal-title  { font-size: 20px; font-weight: 300; }
+.modal-body   { padding: var(--s5); }
+.modal-footer { padding: var(--s4) var(--s5); border-top: 1px solid var(--cds-border-subtle-01); display: flex; gap: 1px; justify-content: flex-end; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--cds-layer-01); }
+::-webkit-scrollbar-thumb { background: var(--cds-border-strong-01); }
+
+/* ── Micro-prompt group ─────────────────────────────────────────────────────── */
+.micro-group {
+  background: var(--cds-layer-01);
+  border: 1px solid var(--cds-border-subtle-01);
+  margin-bottom: var(--s5);
+}
+.micro-group-header {
+  display: flex; align-items: center; gap: var(--s3);
+  padding: var(--s3) var(--s4); background: var(--cds-layer-01);
+  border-bottom: 1px solid var(--cds-border-subtle-01);
+}
+.micro-group-num {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--cds-interactive); color: #fff;
+  font-size: 11px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.micro-group-title { font-size: 14px; font-weight: 600; flex: 1; }
+.micro-group-tag {
+  font-size: 11px; font-weight: 600; padding: 2px 8px; letter-spacing: 0.32px;
+}
+.micro-detected {
+  background: var(--cds-support-success-bg);
+  border-bottom: 1px solid var(--cds-border-subtle-01);
+  padding: var(--s3) var(--s4); font-size: 12px;
+  color: var(--cds-tag-green-text);
+  display: flex; align-items: center; gap: var(--s2);
+}
+.micro-prompts { padding: var(--s4); display: flex; flex-direction: column; gap: var(--s4); }
+
+.micro-label {
+  font-size: 12px; font-weight: 600; letter-spacing: 0.32px;
+  color: var(--cds-text-secondary); text-transform: uppercase;
+  margin-bottom: var(--s2); display: flex; align-items: center; gap: var(--s2);
+}
+.micro-label .req { color: var(--cds-support-error); }
+
+/* ── Complexity section ─────────────────────────────────────────────────────── */
+.complexity-section {
+  background: var(--cds-layer-01);
+  border: 1px solid var(--cds-border-subtle-01);
+  margin-bottom: var(--s5);
+}
+.complexity-header {
+  padding: var(--s3) var(--s4);
+  background: #fff3cd; border-bottom: 1px solid var(--cds-border-subtle-01);
+  font-size: 13px; font-weight: 600; color: #8e6a00;
+  display: flex; align-items: center; gap: var(--s2);
+}
+/* Derived (AI-found) complexity cards */
+.cf-derived-list { padding: var(--s3) var(--s4); display:flex; flex-direction:column; gap:var(--s3); }
+.cf-card {
+  border: 1px solid var(--cds-border-subtle-01);
+  background: var(--cds-background);
+}
+.cf-card.derived { border-left: 3px solid var(--cds-support-success); }
+.cf-card.candidate { border-left: 3px solid var(--cds-interactive); }
+.cf-card-header {
+  display: flex; align-items: center; gap: var(--s3);
+  padding: var(--s3) var(--s4);
+  background: var(--cds-layer-01);
+  border-bottom: 1px solid var(--cds-border-subtle-01);
+}
+.cf-card-badge {
+  font-size: 11px; font-weight: 600; padding: 2px 8px; letter-spacing: 0.32px; flex-shrink: 0;
+}
+.cf-card-name { font-size: 14px; font-weight: 600; flex: 1; }
+.cf-card-edit {
+  font-size: 12px; color: var(--cds-link-primary); background: none; border: none;
+  cursor: pointer; font-family: inherit; padding: var(--s1) var(--s2);
+}
+.cf-card-edit:hover { text-decoration: underline; }
+.cf-card-body { padding: var(--s3) var(--s4); display: grid; grid-template-columns: 1fr 1fr; gap: var(--s3); }
+.cf-card-body.collapsed { display: none; }
+.cf-field-label {
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.32px; color: var(--cds-text-secondary); margin-bottom: 4px;
+}
+.cf-derived-text {
+  font-size: 13px; color: var(--cds-text-primary); line-height: 20px;
+  padding: var(--s2); background: var(--cds-layer-01);
+  border: 1px solid var(--cds-border-subtle-01); min-height: 48px;
+}
+.cf-card textarea {
+  width: 100%; background: var(--cds-layer-01); border: none;
+  border-bottom: 1px solid var(--cds-border-strong-01);
+  font-family: inherit; font-size: 13px; color: var(--cds-text-primary);
+  resize: none; min-height: 60px; line-height: 1.5; outline: none; padding: var(--s2);
+}
+.cf-card textarea:focus { border-bottom: 2px solid var(--cds-interactive); background: #fff; }
+.cf-card textarea::placeholder { color: var(--cds-text-placeholder); font-size: 12px; }
+/* Add factor picker */
+.cf-add-section { padding: var(--s3) var(--s4); border-top: 1px solid var(--cds-border-subtle-01); }
+.cf-add-label { font-size: 12px; font-weight: 600; color: var(--cds-text-secondary); text-transform: uppercase; letter-spacing: 0.32px; margin-bottom: var(--s2); }
+.cf-picker { display: flex; flex-wrap: wrap; gap: var(--s2); margin-bottom: var(--s3); }
+.cf-chip {
+  font-size: 12px; padding: 4px 12px; border: 1px solid var(--cds-border-subtle-02);
+  background: var(--cds-layer-01); color: var(--cds-text-primary); cursor: pointer;
+  font-family: inherit; transition: all .1s;
+}
+.cf-chip:hover { background: var(--cds-layer-hover-01); border-color: var(--cds-interactive); }
+.cf-chip.used { opacity: 0.35; pointer-events: none; }
+/* Counter */
+.complexity-count {
+  display: flex; align-items: center; gap: var(--s3); padding: var(--s3) var(--s4);
+  background: var(--cds-layer-01); border-top: 1px solid var(--cds-border-subtle-01);
+  font-size: 13px;
+}
+.complexity-count .count-num { font-size: 20px; font-weight: 600; color: var(--cds-support-error); }
+.complexity-count .count-num.met { color: var(--cds-support-success); }
+
+/* ── Quality gate checklist ─────────────────────────────────────────────────── */
+.quality-gate {
+  background: var(--cds-layer-01);
+  border: 1px solid var(--cds-border-subtle-01);
+  padding: var(--s4); margin-bottom: var(--s5);
+}
+.quality-gate-title {
+  font-size: 12px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.32px; color: var(--cds-text-secondary);
+  margin-bottom: var(--s3);
+}
+.gate-item {
+  display: flex; align-items: center; gap: var(--s3);
+  padding: var(--s2) 0; font-size: 14px;
+  border-bottom: 1px solid var(--cds-border-subtle-01);
+}
+.gate-item:last-child { border-bottom: none; }
+.gate-icon { font-size: 16px; flex-shrink: 0; }
+.gate-label { flex: 1; }
+.gate-status { font-size: 12px; font-weight: 600; }
+.gate-status.pass { color: var(--cds-support-success); }
+.gate-status.fail { color: var(--cds-support-error); }
+.gate-status.warn { color: #8e6a00; }
+
+/* ── Editable review ────────────────────────────────────────────────────────── */
+.review-val[contenteditable="true"] {
+  outline: none; min-height: 20px;
+  border-bottom: 1px dashed var(--cds-border-subtle-02);
+  padding-bottom: 2px;
+}
+.review-val[contenteditable="true"]:focus {
+  border-bottom-color: var(--cds-interactive);
+  background: var(--cds-support-info-bg);
+  padding: 4px;
+}
+.edit-indicator {
+  font-size: 10px; color: var(--cds-text-placeholder);
+  margin-left: var(--s2); font-weight: 400; text-transform: none; letter-spacing: 0;
+}
+
+/* Utility */
+.mt4  { margin-top: var(--s4); }
+.mb4  { margin-bottom: var(--s4); }
+.text-secondary { color: var(--cds-text-secondary); }
+.text-sm { font-size: 12px; letter-spacing: 0.32px; }
+.divider { height: 1px; background: var(--cds-border-subtle-01); margin: var(--s5) 0; }
+</style>
+</head>
+<body>
+
+<!-- IBM Global Header -->
+<header class="ibm-header">
+  <div class="ibm-header-name">
+
+    <!-- IBM wordmark -->
+    <div class="ibm-header-logo">
+      <div class="ibm-header-logo-mark">
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+      </div>
+      <span class="ibm-header-logo-wordmark">IBM</span>
+    </div>
+
+    <div class="ibm-header-divider"></div>
+
+    <!-- Product name + powered-by -->
+    <div class="ibm-header-product-stack">
+      <div class="ibm-header-product-name">CPM Package Assistant</div>
+      <div class="ibm-header-product-sub">
+        <span>powered by</span>
+        <span class="ibm-header-powered-dot"></span>
+        <span class="ibm-header-ica-badge">
+          <span class="ica-hex"></span>
+          IBM Consulting Advantage · Agentic Studio
+        </span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="ibm-header-right">
+    <div class="conn-tag disconnected" id="connBadge">
+      <span class="conn-dot"></span>
+      <span id="connText">Agentic Studio — No API Key</span>
+    </div>
+    <button class="header-btn" onclick="openConfig()">⚙ Configure</button>
+  </div>
+</header>
+
+<div class="app">
+
+<!-- Side Nav -->
+<nav class="side-nav">
+  <div class="side-nav-header">
+    <div class="side-nav-header-label">Workflow Steps</div>
+  </div>
+  <div class="side-nav-items">
+    <button class="nav-item active" id="nav0" onclick="goTo(0)">
+      <div class="nav-num">1</div>
+      <div><div class="nav-label">Upload Documents</div><div class="nav-sub">CV, reports, PPTs</div></div>
+    </button>
+    <button class="nav-item locked" id="nav1">
+      <div class="nav-num">2</div>
+      <div><div class="nav-label">Detect Projects</div><div class="nav-sub">AI scans all files</div></div>
+    </button>
+    <button class="nav-item locked" id="nav2">
+      <div class="nav-num">3</div>
+      <div><div class="nav-label">Select Program</div><div class="nav-sub">Choose for Package 1</div></div>
+    </button>
+    <button class="nav-item locked" id="nav3">
+      <div class="nav-num">4</div>
+      <div><div class="nav-label">Eligibility Check</div><div class="nav-sub">Validate CPM criteria</div></div>
+    </button>
+    <button class="nav-item locked" id="nav4">
+      <div class="nav-num">5</div>
+      <div><div class="nav-label">Fill Gaps</div><div class="nav-sub">Targeted questions</div></div>
+    </button>
+    <button class="nav-item locked" id="nav5">
+      <div class="nav-num">6</div>
+      <div><div class="nav-label">Generate Draft</div><div class="nav-sub">AI writes content</div></div>
+    </button>
+    <button class="nav-item locked" id="nav6">
+      <div class="nav-num">7</div>
+      <div><div class="nav-label">Profile Score</div><div class="nav-sub">Section-by-section</div></div>
+    </button>
+    <button class="nav-item locked" id="nav7">
+      <div class="nav-num">8</div>
+      <div><div class="nav-label">Review Content</div><div class="nav-sub">Check before export</div></div>
+    </button>
+    <button class="nav-item locked" id="nav8">
+      <div class="nav-num">9</div>
+      <div><div class="nav-label">Export DOCX</div><div class="nav-sub">Download profile</div></div>
+    </button>
+  </div>
+
+  <div class="log-panel">
+    <div class="log-panel-title">
+      System Log
+      <button onclick="clearLog()">Clear</button>
+    </div>
+    <div class="log-scroll" id="logScroll"></div>
+  </div>
+
+  <div class="side-nav-footer">
+    <button onclick="openConfig()">⚙ Configure Agentic Studio</button>
+    <div style="font-size:10px;color:var(--cds-text-placeholder);padding:0 var(--s4) var(--s3);letter-spacing:.32px;display:flex;align-items:center;gap:5px">
+      <span class="ica-hex" style="width:10px;height:10px;flex-shrink:0"></span>
+      IBM Consulting Advantage
+    </div>
+  </div>
+</nav>
+
+<!-- Main -->
+<main class="main">
+
+  <!-- Page 0: Upload -->
+  <div class="page active" id="page0">
+    <div class="page-header">
+      <div class="page-title">Upload Your Documents</div>
+      <div class="page-sub">Add your CV, project reports, case studies and presentations. The AI will scan all documents, identify every eligible project, and let you choose which to build your CPM profile around.</div>
+    </div>
+    <div class="page-body">
+      <div class="upload-tile" id="uploadTile">
+        <input type="file" id="fileInput" multiple accept=".pdf,.docx,.doc,.pptx,.ppt,.xlsx,.xls,.csv,.txt">
+        <div class="upload-icon">📁</div>
+        <h3>Add files</h3>
+        <p>Drag and drop files here, or click to browse</p>
+        <div class="file-types">
+          <span class="file-type-tag">PDF</span>
+          <span class="file-type-tag">DOCX</span>
+          <span class="file-type-tag">PPTX</span>
+          <span class="file-type-tag">XLSX</span>
+          <span class="file-type-tag">CSV</span>
+          <span class="file-type-tag">TXT</span>
+        </div>
+      </div>
+
+      <!-- Coming soon: image upload -->
+      <div style="display:flex;align-items:flex-start;gap:var(--s3);padding:var(--s4);background:var(--cds-layer-01);border:1px solid var(--cds-border-subtle-01);margin-top:var(--s4)">
+        <span style="font-size:18px;flex-shrink:0;margin-top:1px">🔜</span>
+        <div>
+          <div style="font-size:13px;font-weight:600;color:var(--cds-text-primary);margin-bottom:4px">
+            Image &amp; Screenshot Upload — Coming Soon
+          </div>
+          <div style="font-size:13px;color:var(--cds-text-secondary);line-height:20px">
+            A future release will support uploading screenshots of IPPF dashboards, CSAT scorecards,
+            org charts and financial summaries. The AI will extract data directly from these images.
+            We are currently working on platform-level integration to enable this capability.
+          </div>
+        </div>
+      </div>
+
+      <div class="file-list" id="fileList"></div>
+      <div class="btn-set">
+        <button class="cds-btn cds-btn-primary" id="uploadBtn" disabled onclick="startExtraction()">
+          Scan Documents <span class="cds-btn-icon">→</span>
+        </button>
+        <span id="fileCount" class="text-secondary text-sm"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page 1: Scanning -->
+  <div class="page" id="page1">
+    <div class="page-header">
+      <div class="page-title">Scanning Documents</div>
+      <div class="page-sub">Extracting text and identifying all projects and programs in your documents.</div>
+    </div>
+    <div class="page-body">
+      <div class="ica-notice" id="icaNotice1">
+        <div class="spinner"></div>
+        <span id="icaMsg1">Connecting to IBM Consulting Advantage Agentic Studio...</span>
+      </div>
+      <div class="cds-tile">
+        <div class="status-row"><div class="loading-dot"></div><span id="scanMsg">Initialising...</span></div>
+        <div class="cds-progress-bar"><div class="cds-progress-fill" id="scanProg" style="width:0%"></div></div>
+        <div class="step-log" id="scanLog"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page 2: Project Selection -->
+  <div class="page" id="page2">
+    <div class="page-header">
+      <div class="page-title">Select Your Program</div>
+      <div class="page-sub" id="selectSub">The AI found multiple projects in your documents. Select the one to use for CPM Package 1.</div>
+    </div>
+    <div class="page-body">
+      <div id="recBanner"></div>
+      <div class="proj-grid" id="projGrid"></div>
+      <div class="btn-set">
+        <button class="cds-btn cds-btn-primary" id="selectBtn" disabled onclick="confirmSelection()">
+          Analyze Selected Program <span class="cds-btn-icon">→</span>
+        </button>
+        <button class="cds-btn cds-btn-ghost" onclick="goTo(0)">← Back</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page 3: Eligibility Check -->
+  <div class="page" id="page3">
+    <div class="page-header">
+      <div class="page-title">Eligibility Check</div>
+      <div class="page-sub" id="eligSub">Validating the selected program against IBM CPM submission criteria before proceeding.</div>
+    </div>
+    <div class="page-body">
+      <div id="eligResult"></div>
+      <div class="btn-set" id="eligBtns" style="display:none">
+        <button class="cds-btn cds-btn-primary" onclick="proceedToAnalyze()">
+          Continue to Analysis <span class="cds-btn-icon">→</span>
+        </button>
+        <button class="cds-btn cds-btn-ghost" onclick="goTo(2)">← Change Program</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page 4: Analyzing -->
+  <div class="page" id="page4">
+    <div class="page-header">
+      <div class="page-title">Analyzing Program</div>
+      <div class="page-sub" id="analyzeSub">Extracting all CPM template fields for the selected program.</div>
+    </div>
+    <div class="page-body">
+      <div class="ica-notice show" id="icaNotice4">
+        <div class="spinner"></div>
+        <span id="icaMsg4">IBM Consulting Advantage — analyzing selected program...</span>
+      </div>
+      <div class="cds-tile">
+        <div class="status-row"><div class="loading-dot"></div><span id="analyzeMsg">Connecting...</span></div>
+        <div class="cds-progress-bar"><div class="cds-progress-fill" id="analyzeProg" style="width:5%"></div></div>
+        <div class="step-log" id="analyzeLog"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page 5: Gap Form -->
+  <div class="page" id="page5">
+    <div class="page-header">
+      <div class="page-title">Complete Your Profile</div>
+      <div class="page-sub" id="gapSub">The AI extracted what it could from your documents. Answer these focused questions so it can write professional CPM content.</div>
+    </div>
+    <div class="page-body">
+      <div id="detectedTable"></div>
+      <div id="qualitySection"></div>
+      <div id="gapForm"></div>
+
+      <!-- Quality Gate Checklist -->
+      <div class="quality-gate" id="qualityGate" style="display:none">
+        <div class="quality-gate-title">Readiness Check — before generating</div>
+        <div id="gateItems"></div>
+      </div>
+
+      <div class="btn-set">
+        <button class="cds-btn cds-btn-primary" id="generateBtn" onclick="validateAndGenerate()">
+          Generate Professional Draft <span class="cds-btn-icon">→</span>
+        </button>
+        <button class="cds-btn cds-btn-ghost" onclick="goTo(2)">← Change Program</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page 6: Generating -->
+  <div class="page" id="page6">
+    <div class="page-header">
+      <div class="page-title">Writing Your Profile</div>
+      <div class="page-sub">The AI is writing professional CPM-quality content for every template section.</div>
+    </div>
+    <div class="page-body">
+      <div class="ica-notice show">
+        <div class="spinner"></div>
+        <span id="completeIcaMsg">IBM Consulting Advantage — writing professional content...</span>
+      </div>
+      <div class="cds-tile">
+        <div class="status-row"><div class="loading-dot"></div><span id="completeMsg">Sending to agent...</span></div>
+        <div class="cds-progress-bar"><div class="cds-progress-fill" id="completeProg" style="width:5%"></div></div>
+        <div class="step-log" id="completeLog"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page 7: Profile Scoring -->
+  <div class="page" id="page7">
+    <div class="page-header">
+      <div class="page-title">Profile Score</div>
+      <div class="page-sub">Section-by-section assessment against the IBM CPM submission rubric. Review weak areas before exporting.</div>
+    </div>
+    <div class="page-body">
+      <div id="scoreBlock"></div>
+      <div class="btn-set">
+        <button class="cds-btn cds-btn-primary" onclick="proceedToReview()">
+          Review & Export <span class="cds-btn-icon">→</span>
+        </button>
+        <button class="cds-btn cds-btn-ghost" onclick="goTo(5)">← Edit Answers</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page 8: Review -->
+  <div class="page" id="page8">
+    <div class="page-header">
+      <div class="page-title">Review Your Profile</div>
+      <div class="page-sub">Review all AI-generated content section by section before exporting. Use the Edit Answers button to go back and refine anything.</div>
+    </div>
+    <div class="page-body">
+      <div id="warningsBlock"></div>
+      <div id="reviewBlock"></div>
+      <div class="btn-set">
+        <button class="cds-btn cds-btn-primary" onclick="goToExport()">
+          Export as DOCX <span class="cds-btn-icon">↓</span>
+        </button>
+        <button class="cds-btn cds-btn-ghost" onclick="goTo(7)">← Back to Score</button>
+        <button class="cds-btn cds-btn-ghost" onclick="goTo(5)">← Edit Answers</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page 9: Export -->
+  <div class="page" id="page9">
+    <div class="page-header">
+      <div class="page-title">Export Profile</div>
+      <div class="page-sub">Your CPM profile document is being generated from the IBM template.</div>
+    </div>
+    <div class="page-body">
+      <div id="exportResult" class="mt4"></div>
+      <div class="btn-set" style="margin-top:var(--s5)">
+        <button class="cds-btn cds-btn-ghost" onclick="goTo(8)">← Back to Review</button>
+        <button class="cds-btn cds-btn-ghost" onclick="startPackage2()">
+          Start Package 2 →
+        </button>
+      </div>
+    </div>
+  </div>
+
+</main>
+</div>
+
+<!-- Config Modal -->
+<div class="modal-overlay" id="configModal">
+  <div class="cds-modal">
+    <div class="modal-header" style="display:flex;align-items:center;gap:12px">
+      <span class="ica-hex" style="width:22px;height:22px;flex-shrink:0"></span>
+      <div>
+        <div class="modal-title" style="font-size:16px;font-weight:600;margin-bottom:2px">API Configuration</div>
+        <div style="font-size:11px;color:var(--cds-text-secondary);letter-spacing:.32px">IBM Consulting Advantage · Agentic Studio</div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="cds-notification cds-notification-info" style="margin-bottom:var(--s5)">
+        <span class="notif-icon">ℹ</span>
+        <div class="notif-body">
+          Enter your <strong>IBM Consulting Advantage Agentic Studio</strong> API key to enable AI analysis.<br>
+          Generate one from <strong>IBM Consulting Advantage → Settings → API Keys</strong>.<br>
+          <span style="font-size:11px;color:var(--cds-text-secondary);margin-top:4px;display:block">Stored locally on your machine. Sent only to the IBM Consulting Advantage Agentic Studio endpoint.</span>
+        </div>
+      </div>
+      <div class="cds-form-item">
+        <label class="cds-label">Agentic Studio API Key <span class="req">*</span></label>
+        <input class="cds-input" id="cfg_key" type="password" placeholder="Paste your Agentic Studio API key here">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="cds-btn cds-btn-ghost" onclick="closeConfig()">Cancel</button>
+      <button class="cds-btn cds-btn-primary" onclick="saveConfig()">Save &amp; Connect</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Utility — hoisted functions ───────────────────────────────────────────────
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// Safely convert any agent value to a plain string (guards against object/array/null)
+function safeStr(val) {
+  if (val == null)               return "";
+  if (typeof val === "string")   return val;
+  if (typeof val === "number")   return String(val);
+  if (Array.isArray(val))        return val.map(safeStr).join(", ");
+  if (typeof val === "object")   return Object.values(val).map(safeStr).join("; ");
+  return String(val);
+}
+
+// Safely coerce agent value to array
+function safeArr(val) {
+  if (Array.isArray(val)) return val;
+  if (val && typeof val === "object") return Object.values(val);
+  if (val) return [val];
+  return [];
+}
+
+// ── State ─────────────────────────────────────────────────────────────────────
+const S = {
+  files: [], extractedText: "",
+  detectedProjects: [], selectedProject: null,
+  eligibilityResult: null, agentAnalysis: null, finalData: null,
+  package2Mode: false,
+  apiKey: localStorage.getItem("cpm_key") || "",
+};
+
+// ── Backend log ───────────────────────────────────────────────────────────────
+if (window.cpmAPI?.onBackendLog) {
+  window.cpmAPI.onBackendLog(({ level, msg, ts }) => addLog(level, `${ts} ${msg}`));
+}
+function addLog(level, text) {
+  const s = document.getElementById("logScroll");
+  const d = document.createElement("div");
+  d.className = `log-line ${level}`; d.textContent = text;
+  s.appendChild(d); s.scrollTop = s.scrollHeight;
+}
+function clearLog() { document.getElementById("logScroll").innerHTML = ""; }
+
+// ── Connection badge ──────────────────────────────────────────────────────────
+function setConn(state, msg) {
+  document.getElementById("connBadge").className = `conn-tag ${state}`;
+  document.getElementById("connText").textContent = msg;
+}
+function updateConn() {
+  setConn(S.apiKey ? "connected" : "disconnected",
+    S.apiKey ? "Agentic Studio — Connected" : "Agentic Studio — No API Key");
+}
+updateConn();
+
+// ── Navigation ────────────────────────────────────────────────────────────────
+function goTo(n) {
+  document.querySelectorAll(".page").forEach((p,i) => p.classList.toggle("active", i===n));
+}
+function unlock(n, clickable=true) {
+  const b = document.getElementById(`nav${n}`);
+  b.classList.remove("locked"); b.classList.add("active");
+  if (clickable) { b.onclick = () => goTo(n); b.style.cursor = "pointer"; }
+}
+function markDone(n) {
+  const b = document.getElementById(`nav${n}`);
+  b.classList.remove("active","locked"); b.classList.add("done");
+  b.querySelector(".nav-num").textContent = "✓";
+}
+
+// ── File upload ───────────────────────────────────────────────────────────────
+const fileInput  = document.getElementById("fileInput");
+const uploadTile = document.getElementById("uploadTile");
+fileInput.addEventListener("change", () => addFiles([...fileInput.files]));
+uploadTile.addEventListener("dragover",  e => { e.preventDefault(); uploadTile.classList.add("over"); });
+uploadTile.addEventListener("dragleave", () => uploadTile.classList.remove("over"));
+uploadTile.addEventListener("drop", e => { e.preventDefault(); uploadTile.classList.remove("over"); addFiles([...e.dataTransfer.files]); });
+
+const EXT = { pdf:"PDF",docx:"DOCX",doc:"DOCX",pptx:"PPTX",ppt:"PPTX",xlsx:"XLSX",xls:"XLSX",csv:"CSV",txt:"TXT" };
+
+function addFiles(files) { files.forEach(f => { if (!S.files.find(x=>x.name===f.name)) S.files.push(f); }); renderFiles(); }
+function removeFile(n)   { S.files = S.files.filter(f=>f.name!==n); renderFiles(); }
+
+function renderFiles() {
+  const list = document.getElementById("fileList"); list.innerHTML = "";
+  S.files.forEach(f => {
+    const ext  = f.name.split(".").pop().toLowerCase();
+    const size = f.size>1048576?`${(f.size/1048576).toFixed(1)} MB`:`${(f.size/1024).toFixed(0)} KB`;
+    const div  = document.createElement("div"); div.className = "file-row";
+    div.innerHTML = `<span class="file-ext-tag ext-${ext}">${EXT[ext]||ext.toUpperCase()}</span>
+      <span class="file-name">${f.name}</span>
+      <span class="file-size">${size}</span>
+      <button class="file-del" onclick="removeFile('${f.name}')">✕</button>`;
+    list.appendChild(div);
+  });
+  document.getElementById("uploadBtn").disabled = S.files.length === 0;
+  document.getElementById("fileCount").textContent = S.files.length
+    ? `${S.files.length} file${S.files.length>1?"s":""} selected`
+    : "";
+}
+
+function addStepLog(containerId, text, type="info") {
+  const ts = new Date().toTimeString().slice(0,8);
+  const d = document.createElement("div"); d.className=`step-log-line ${type}`;
+  d.innerHTML=`<span class="ts">${ts}</span><span>${text}</span>`;
+  document.getElementById(containerId).appendChild(d);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STEP 1 → 2: Extract + Detect Projects
+// ─────────────────────────────────────────────────────────────────────────────
+async function startExtraction() {
+  unlock(1, false); goTo(1);
+  const prog=document.getElementById("scanProg"), msg=document.getElementById("scanMsg");
+  const notice=document.getElementById("icaNotice1"), icaMsg=document.getElementById("icaMsg1");
+
+  function set(text, pct) { msg.textContent=text; prog.style.width=`${pct}%`; addStepLog("scanLog",text); }
+
+  try {
+    set("Reading file contents...", 10);
+
+    let extract;
+    if (window.cpmAPI) {
+      set("Extracting and chunking document text...", 25);
+      const r = await window.cpmAPI.processFiles(S.files.map(f=>f.path));
+      if (!r.success) throw new Error(r.error);
+      extract = r.data;
+    } else {
+      await delay(600);
+      extract = { extractedText:`[PREVIEW] ${S.files.map(f=>f.name).join(", ")}`, filesSummary:S.files.map(f=>({fileName:f.name,status:"ok",chunkCount:8})) };
+    }
+    S.extractedText = extract.extractedText;
+    set(`Extraction complete — ${extract.filesSummary.length} file(s)`, 45);
+
+    // Detect projects
+    notice.classList.add("show");
+    icaMsg.textContent = "Connected to IBM Consulting Advantage — scanning for projects...";
+    setConn("connecting", "Agentic Studio — Scanning...");
+    set("Sending to IBM Consulting Advantage Agentic Studio — detecting projects...", 60);
+    addStepLog("scanLog","▶ IBM Consulting Advantage Agentic Studio — detect_projects mode","agent");
+
+    let detect;
+    if (window.cpmAPI && S.apiKey) {
+      const r = await window.cpmAPI.agentDetectProjects({ extractedText:S.extractedText, apiKey:S.apiKey });
+      if (!r.success) throw new Error(r.error);
+      detect = r.data;
+    } else {
+      await delay(800);
+      detect = mockDetect();
+    }
+
+    prog.style.width="100%"; notice.classList.remove("show");
+    setConn("connected","Agentic Studio — Connected");
+    S.detectedProjects = detect.projects||[];
+    set(`Found ${S.detectedProjects.length} project(s)`, 100);
+    addStepLog("scanLog",`✅ ${S.detectedProjects.length} project(s) identified`,"success");
+
+    markDone(0); markDone(1);
+    await delay(600);
+
+    if (S.detectedProjects.length===1) {
+      S.selectedProject = S.detectedProjects[0];
+      markDone(2); runEligibility();
+    } else {
+      renderProjectSelection(detect);
+    }
+  } catch(err) {
+    notice.classList.remove("show"); setConn("disconnected","Agentic Studio — Error");
+    msg.textContent="Error"; addStepLog("scanLog",`❌ ${err.message}`,"error");
+    document.getElementById("scanLog").innerHTML+=`<div style="margin-top:var(--s3)"><div class="cds-notification cds-notification-error"><span class="notif-icon">✕</span><div class="notif-body">${err.message}</div></div><button class="cds-btn cds-btn-ghost" style="margin-top:var(--s3)" onclick="goTo(0)">← Try Again</button></div>`;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STEP 2: Project Selection
+// ─────────────────────────────────────────────────────────────────────────────
+function renderProjectSelection(detect) {
+  unlock(2); goTo(2);
+  const projects=detect.projects||[], recId=detect.recommendation, recReason=detect.recommendation_reason||"";
+  document.getElementById("selectSub").textContent=`The AI found ${projects.length} projects. Select the one to use for ${S.package2Mode?"Package 2":"Package 1"}.`;
+
+  const recProj = projects.find(p=>p.id===recId);
+  document.getElementById("recBanner").innerHTML = recProj
+    ? `<div class="cds-notification cds-notification-success" style="margin-bottom:var(--s5)"><span class="notif-icon">✓</span><div class="notif-body"><strong>AI Recommendation:</strong> "${recProj.title}" — ${recReason}</div></div>`
+    : "";
+
+  const grid = document.getElementById("projGrid"); grid.innerHTML="";
+  projects.forEach(proj => {
+    const isRec=proj.id===recId;
+    const card=document.createElement("div"); card.className=`proj-card${isRec?" recommended":""}`; card.dataset.id=proj.id;
+    card.onclick=()=>selectProject(proj.id);
+    card.innerHTML=`
+      <div class="proj-radio"></div>
+      ${isRec?'<span class="rec-badge">⭐ RECOMMENDED</span>':""}
+      <div class="proj-body">
+        <div class="proj-title">${proj.title||"Untitled"}</div>
+        <div class="proj-meta">
+          <span class="proj-meta-item">🏢 ${proj.client||"—"}</span>
+          <span class="proj-meta-item">👤 ${proj.role||"—"}</span>
+          <span class="proj-meta-item">📅 ${proj.duration||"—"}</span>
+          ${proj.tcv?'<span class="proj-meta-item">💰 ' + proj.tcv + '</span>':""}
+        </div>
+        <div class="proj-summary">${proj.summary||""}</div>
+        <div class="suit-row">
+          <span class="suit-label ${proj.suitability||"medium"}">${(proj.suitability||"MEDIUM").toUpperCase()}</span>
+          <div class="suit-track"><div class="suit-fill ${proj.suitability||"medium"}"></div></div>
+        </div>
+        ${proj.suitability_reason?'<div class="suit-reason">' + proj.suitability_reason + '</div>':""}
+      </div>`;
+    grid.appendChild(card);
+  });
+  if (recId) selectProject(recId);
+}
+
+function selectProject(id) {
+  document.querySelectorAll(".proj-card").forEach(c=>c.classList.toggle("selected", c.dataset.id===id));
+  S.selectedProject = S.detectedProjects.find(p=>p.id===id)||null;
+  document.getElementById("selectBtn").disabled=!S.selectedProject;
+}
+
+function confirmSelection() {
+  if (!S.selectedProject) return;
+  markDone(2); runEligibility();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STEP 3: Eligibility Check
+// ─────────────────────────────────────────────────────────────────────────────
+async function runEligibility() {
+  unlock(3, false); goTo(3);
+  const proj = S.selectedProject;
+  document.getElementById("eligSub").textContent = `Checking "${proj?.title||"selected program"}" against IBM CPM submission criteria.`;
+
+  await delay(400); // Slight pause for UX
+
+  // Run checks client-side (fast — no agent call needed)
+  const checks = runEligibilityChecks(proj);
+  S.eligibilityResult = checks;
+
+  const passCount = checks.filter(c=>c.status==="pass").length;
+  const warnCount = checks.filter(c=>c.status==="warn").length;
+  const failCount = checks.filter(c=>c.status==="fail").length;
+  const overallPass = failCount===0;
+
+  const statusIcon  = overallPass ? (warnCount>0?"⚠":"✓") : "✕";
+  const statusClass = overallPass ? (warnCount>0?"warning":"success") : "error";
+  const statusMsg   = overallPass
+    ? (warnCount>0?`Eligible with ${warnCount} warning${warnCount>1?"s":""}. Review before submitting.`:`All ${passCount} criteria met. Good to proceed.`)
+    : `${failCount} criterion ${failCount>1?"do":"does"} not meet CPM requirements. Consider selecting a different program.`;
+
+  document.getElementById("eligResult").innerHTML=`
+    <div class="cds-notification cds-notification-${statusClass}" style="margin-bottom:var(--s5)">
+      <span class="notif-icon">${statusIcon}</span>
+      <div class="notif-body"><strong>${overallPass?"Eligible":"May Not Qualify"}</strong> — ${statusMsg}</div>
+    </div>
+    <div class="eligibility-grid">
+      ${checks.map(c=>`
+        <div class="elig-card">
+          <div class="elig-card-title">${c.label}</div>
+          <div class="elig-result ${c.status==="pass"?"elig-pass":c.status==="warn"?"elig-warn":"elig-fail"}">
+            ${c.status==="pass"?"✓ Pass":c.status==="warn"?"⚠ Warning":"✕ Fail"}
+          </div>
+          <div class="elig-note">${c.note}</div>
+        </div>`).join("")}
+    </div>`;
+
+  document.getElementById("eligBtns").style.display="flex";
+  // Change button label if fails
+  if (!overallPass) {
+    document.getElementById("eligBtns").innerHTML=`
+      <button class="cds-btn cds-btn-primary" onclick="proceedToAnalyze()">Continue Anyway <span class="cds-btn-icon">→</span></button>
+      <button class="cds-btn cds-btn-ghost" onclick="goTo(2)">← Select Different Program</button>`;
+  }
+  markDone(3);
+}
+
+function runEligibilityChecks(proj) {
+  const checks = [];
+  // TCV check
+  const tcvStr = proj?.tcv||"";
+  const tcvNum = parseFloat(tcvStr.replace(/[^0-9.]/g,""))||0;
+  checks.push({ label:"TCV Clip Level",
+    status: tcvNum>=3?"pass":tcvNum>=1?"warn":"fail",
+    note: tcvNum>=3?`${tcvStr} meets typical CPM clip level ($3M+ for most service lines)`:tcvNum>=1?`${tcvStr} — verify against your specific service line clip level`:`${tcvStr||"Not found"} — may be below minimum clip level` });
+
+  // Duration check
+  const dur = proj?.duration||"";
+  const hasYears = /20\d\d/.test(dur);
+  checks.push({ label:"Delivery Duration",
+    status: hasYears?"pass":"warn",
+    note: hasYears?"Project duration appears to span adequate delivery period":"Duration not clearly identified in documents — confirm ≥ 6 months" });
+
+  // Role check
+  const role = (proj?.role||"").toLowerCase();
+  const isPM = /program manager|project manager|dpe|delivery|pe\b/.test(role);
+  checks.push({ label:"Primary Role",
+    status: isPM?"pass":"warn",
+    note: isPM?`${proj.role} — eligible delivery role`:`${proj.role||"Not found"} — confirm candidate had delivery accountability` });
+
+  // Suitability
+  const suit = proj?.suitability||"medium";
+  checks.push({ label:"Overall Suitability",
+    status: suit==="high"?"pass":suit==="medium"?"warn":"fail",
+    note: proj?.suitability_reason||"Based on AI assessment of project complexity and scope" });
+
+  return checks;
+}
+
+function proceedToAnalyze() { runAnalyze(); }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STEP 4: Analyze selected project
+// ─────────────────────────────────────────────────────────────────────────────
+async function runAnalyze() {
+  unlock(4, false); goTo(4);
+  setConn("connecting","Agentic Studio — Analyzing...");
+  document.getElementById("analyzeSub").textContent=`Extracting all CPM fields for "${S.selectedProject?.title||"selected program"}".`;
+
+  const prog=document.getElementById("analyzeProg"), msg=document.getElementById("analyzeMsg");
+  const steps=[[15,"Mapping documents to selected program..."],[35,"Extracting candidate scope and financial data..."],[55,"Identifying complexity factors..."],[72,"Scanning for leadership behaviour evidence..."],[88,"Generating targeted gap questions..."]];
+  let si=0;
+  const tick=setInterval(()=>{
+    if(si>=steps.length){clearInterval(tick);return;}
+    const[p,m]=steps[si++]; prog.style.width=`${p}%`; msg.textContent=m; addStepLog("analyzeLog",m,"agent");
+  },900);
+
+  try {
+    let result;
+    if (window.cpmAPI && S.apiKey) {
+      const r=await window.cpmAPI.agentAnalyze({extractedText:S.extractedText,selectedProject:S.selectedProject,apiKey:S.apiKey});
+      if(!r.success) throw new Error(r.error);
+      result=r.data;
+    } else {
+      await delay(1200); result=mockAnalysis();
+    }
+    clearInterval(tick);
+    prog.style.width="100%"; prog.classList.add("complete");
+    setConn("connected","Agentic Studio — Connected");
+    const fCount=Object.values(result.filled_fields||{}).filter(v=>v&&v!=="—"&&v!==null).length;
+    addStepLog("analyzeLog",`✅ ${fCount} fields detected, ${(result.questions||[]).length} questions — quality ${result.draft_quality_score||0}%`,"success");
+
+    S.agentAnalysis=result; markDone(4);
+    await delay(600); renderGapForm(result);
+  } catch(err) {
+    clearInterval(tick); setConn("disconnected","Agentic Studio — Error");
+    msg.textContent="Error"; addStepLog("analyzeLog",`❌ ${err.message}`,"error");
+    document.getElementById("analyzeLog").innerHTML+=`<div style="margin-top:var(--s4)"><div class="cds-notification cds-notification-error"><span class="notif-icon">✕</span><div>${err.message}</div></div><button class="cds-btn cds-btn-ghost" style="margin-top:var(--s3)" onclick="goTo(2)">← Back</button></div>`;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STEP 5: Gap Form — micro-prompts + complexity matrix + quality gate
+// ─────────────────────────────────────────────────────────────────────────────
+
+// IBM 8 complexity factors
+const COMPLEXITY_FACTORS = [
+  { id:"foak", name:"First-of-a-Kind (FOAK)",         desc:"New capability never delivered before at IBM or this client" },
+  { id:"csi",  name:"Complex Systems Integration",    desc:"Multiple systems, vendors, platforms or data sources integrated" },
+  { id:"cbdm", name:"Cross-Brand / Multi-LOB",        desc:"Multiple IBM brands, service lines or geographies delivering together" },
+  { id:"pd",   name:"Project Delivery",               desc:"Large scale, compressed timeline, fixed price, or team complexity" },
+  { id:"ce",   name:"Client Environment",             desc:"PSU/government, regulated industry, difficult client org, or political complexity" },
+  { id:"ct",   name:"Client Transformation",          desc:"Major change in client operating model, culture or technology landscape" },
+  { id:"cts",  name:"Contract Terms / Structure",     desc:"Risk-reward, outcome-based, multi-vendor SLAs, or complex commercial construct" },
+  { id:"ide",  name:"Inclusion by Delivery Excellence", desc:"Flagged complex by IBM Delivery Excellence, Delivery Leader or Partner" },
+];
+
+const v = id => document.getElementById(id)?.value?.trim() || "";
+
+function renderGapForm(analysis) {
+  unlock(5); goTo(5);
+  try {
+    const ff  = analysis.filled_fields    || {};
+    const fc  = analysis.field_confidence || {};
+  const qs  = analysis.questions        || [];
+  const score = analysis.draft_quality_score || 0;
+  const note  = analysis.draft_quality_note  || "";
+  const fCount = Object.values(ff).filter(v=>v&&v!=="—"&&v!==null).length;
+  const proj   = S.selectedProject?.title || "selected program";
+
+  document.getElementById("gapSub").textContent =
+    `The AI extracted and drafted content for "${proj}". Review the summary below, then fill in what only you can provide — the AI will write the rest professionally.`;
+
+  // ── AI Contribution & Effort Saving Panel ─────────────────────────────────
+  //
+  // Formula (honest, conservative):
+  //   TOTAL_FIELDS    = 30  (key CPM profile fields)
+  //   BASELINE        = 3.5h (midpoint of 3–4h to write a quality CPM package manually)
+  //   FROM_DOCS       = fields agent extracted with high confidence (≥0.7) from uploaded files
+  //   AI_DRAFTED      = fields agent inferred/wrote with medium-low confidence (requires review)
+  //   QUESTIONS_ASKED = fields agent still needs from candidate (zero saving on these)
+  //
+  //   Raw effort weight:
+  //     Doc fields   count at 1.0  (genuinely done)
+  //     AI fields    count at 0.5  (candidate still reviews — reviewing is work)
+  //     Questions    count at 0.0  (clearly not saved)
+  //
+  //   Effort Saved % = MIN(70, (fromDocs×1.0 + aiDrafted×0.5) / TOTAL_FIELDS × 100)
+  //   Cap at 70% — candidate always reviews, confirms and owns the submission
+  //
+  //   Hours saved = Effort% × 3.5h baseline  → shown as ±0.5h range for honesty
+
+  const TOTAL_FIELDS    = 30;
+  const CPM_HOURS_BASELINE = 3.5;
+  const EFFORT_CAP      = 70;
+  const questionsAsked  = (qs || []).length;
+
+  let fromDocs = 0, aiDrafted = 0, manualNeeded = 0;
+  Object.entries(ff).forEach(([key, val]) => {
+    if (!val || val === "—" || val === null) { manualNeeded++; return; }
+    const conf = fc[key] || 0;
+    if (conf >= 0.7) fromDocs++;
+    else             aiDrafted++;
+  });
+  // Cap buckets to TOTAL_FIELDS
+  fromDocs     = Math.min(fromDocs,  TOTAL_FIELDS);
+  aiDrafted    = Math.min(aiDrafted, Math.max(0, TOTAL_FIELDS - fromDocs));
+  manualNeeded = Math.max(0, TOTAL_FIELDS - fromDocs - aiDrafted);
+
+  // Conservative weighted formula
+  const rawEffort      = ((fromDocs * 1.0) + (aiDrafted * 0.5)) / TOTAL_FIELDS * 100;
+  const effortPct      = Math.min(EFFORT_CAP, Math.round(rawEffort));
+  const fromDocsPct    = Math.round(fromDocs  / TOTAL_FIELDS * 100);
+  const aiDraftedPct   = Math.round(aiDrafted / TOTAL_FIELDS * 100);
+  const manualPct      = Math.max(0, 100 - fromDocsPct - aiDraftedPct);
+
+  // Hours — show as range ±0.5h
+  const hoursMid       = Math.round(effortPct / 100 * CPM_HOURS_BASELINE * 10) / 10;
+  const hoursLow       = Math.max(0, Math.round((hoursMid - 0.5) * 10) / 10);
+  const hoursHigh      = Math.round((hoursMid + 0.5) * 10) / 10;
+  const hoursRemainMid = Math.round((1 - effortPct/100) * CPM_HOURS_BASELINE * 10) / 10;
+  const hoursRange     = hoursLow === hoursHigh ? `~${hoursMid}h` : `${hoursLow}–${hoursHigh}h`;
+
+  // Headline copy — varies by how much was found
+  const headline = effortPct >= 55
+    ? "Your profile, accelerated."
+    : effortPct >= 35
+    ? "A strong head start on your profile."
+    : "Your profile, drafted and ready to personalise.";
+
+  const subline = effortPct >= 55
+    ? "The AI read your documents, drafted your leadership narratives, mapped complexity factors and filled the IBM template — so you focus on what only you know."
+    : effortPct >= 35
+    ? "The AI extracted what it could from your documents and drafted sections it could infer. The gaps below are where your input makes all the difference."
+    : "Your documents gave the AI a foundation. It has drafted narratives, inferred complexity and structured the template — your expertise and specifics complete the picture.";
+
+  // Tooltip formula text
+  const formulaTooltip =
+    "Effort Saved = MIN(70%, (Doc fields \xd7 1.0 + AI fields \xd7 0.5) \xf7 30)\n" +
+    "Doc fields: " + fromDocs + " extracted with high confidence from your uploads\n" +
+    "AI fields: " + aiDrafted + " inferred and drafted by AI (you review these below)\n" +
+    "Cap at 70% \u2014 because reviewing AI content is still your work\n" +
+    "Time saved = " + effortPct + "% \xd7 3.5h baseline (quality CPM profile from scratch)";
+
+  const noteHtml = note
+    ? '<div class="cds-notification cds-notification-info" style="margin-top:var(--s4)"><span class="notif-icon">&#9432;</span><div class="notif-body">' + note + '</div></div>'
+    : "";
+
+  document.getElementById("qualitySection").innerHTML =
+
+    '<div style="background:var(--cds-layer-01);border:1px solid var(--cds-border-subtle-01);margin-bottom:var(--s5)">' +
+
+      // ── Zone 1: Headline + pills ──────────────────────────────────────────
+      '<div style="padding:var(--s5);border-bottom:1px solid var(--cds-border-subtle-01);display:flex;align-items:flex-start;justify-content:space-between;gap:var(--s5)">' +
+
+        '<div style="flex:1;min-width:0">' +
+          '<div style="font-size:16px;font-weight:600;color:var(--cds-text-primary);letter-spacing:-.01em;margin-bottom:var(--s2)">' + headline + '</div>' +
+          '<div style="font-size:13px;color:var(--cds-text-secondary);line-height:20px;max-width:560px">' + subline + '</div>' +
+        '</div>' +
+
+        // Pills
+        '<div style="display:flex;gap:var(--s3);flex-shrink:0;align-items:flex-start">' +
+
+          // Effort pill
+          '<div style="text-align:center;min-width:90px;padding:var(--s3) var(--s4);background:var(--cds-support-success-bg);border:1px solid #24a148">' +
+            '<div style="font-size:28px;font-weight:700;color:#24a148;line-height:1.1;letter-spacing:-.02em">' + effortPct + '%</div>' +
+            '<div style="font-size:10px;font-weight:600;color:#24a148;letter-spacing:.48px;text-transform:uppercase;margin-top:2px">AI Handled</div>' +
+            // Tooltip trigger
+            '<div style="font-size:10px;color:#24a148;margin-top:4px;cursor:help;text-decoration:underline dotted" title="' + formulaTooltip.replace(/"/g,"&quot;") + '">ⓘ how we calculate this</div>' +
+          '</div>' +
+
+          // Time pill
+          '<div style="text-align:center;min-width:90px;padding:var(--s3) var(--s4);background:var(--cds-layer-02);border:1px solid var(--cds-border-subtle-01)">' +
+            '<div style="font-size:28px;font-weight:700;color:var(--cds-text-primary);line-height:1.1;letter-spacing:-.02em">' + hoursRange + '</div>' +
+            '<div style="font-size:10px;font-weight:600;color:var(--cds-text-secondary);letter-spacing:.48px;text-transform:uppercase;margin-top:2px">Time Saved</div>' +
+            '<div style="font-size:10px;color:var(--cds-text-placeholder);margin-top:4px">vs. 3.5h baseline</div>' +
+          '</div>' +
+
+        '</div>' +
+      '</div>' +
+
+      // ── Zone 2: Stacked bar + legend ─────────────────────────────────────
+      '<div style="padding:var(--s4);border-bottom:1px solid var(--cds-border-subtle-01)">' +
+
+        // Bar
+        '<div style="display:flex;height:8px;width:100%;overflow:hidden;border-radius:0;margin-bottom:var(--s3)">' +
+          (fromDocsPct > 0  ? '<div style="width:' + fromDocsPct  + '%;background:#24a148;transition:width .6s ease"></div>' : '') +
+          (aiDraftedPct > 0 ? '<div style="width:' + aiDraftedPct + '%;background:#0f62fe;transition:width .6s ease"></div>' : '') +
+          (manualPct > 0    ? '<div style="width:' + manualPct    + '%;background:var(--cds-border-subtle-02)"></div>' : '') +
+        '</div>' +
+
+        // Legend — three items in a row
+        '<div style="display:flex;gap:var(--s5);flex-wrap:wrap">' +
+
+          '<div style="display:flex;align-items:flex-start;gap:var(--s2)">' +
+            '<span style="width:10px;height:10px;background:#24a148;flex-shrink:0;margin-top:3px;display:inline-block"></span>' +
+            '<div>' +
+              '<div style="font-size:13px;font-weight:600;color:var(--cds-text-primary)">' + fromDocsPct + '% from your documents</div>' +
+              '<div style="font-size:11px;color:var(--cds-text-secondary)">' + fromDocs + ' fields extracted with high confidence</div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div style="display:flex;align-items:flex-start;gap:var(--s2)">' +
+            '<span style="width:10px;height:10px;background:#0f62fe;flex-shrink:0;margin-top:3px;display:inline-block"></span>' +
+            '<div>' +
+              '<div style="font-size:13px;font-weight:600;color:var(--cds-text-primary)">' + aiDraftedPct + '% drafted by AI</div>' +
+              '<div style="font-size:11px;color:var(--cds-text-secondary)">' + aiDrafted + ' fields inferred &amp; written — review below</div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div style="display:flex;align-items:flex-start;gap:var(--s2)">' +
+            '<span style="width:10px;height:10px;background:var(--cds-border-subtle-02);border:1px solid var(--cds-border-subtle-01);flex-shrink:0;margin-top:3px;display:inline-block"></span>' +
+            '<div>' +
+              '<div style="font-size:13px;font-weight:600;color:var(--cds-text-primary)">' + manualPct + '% needs your input</div>' +
+              '<div style="font-size:11px;color:var(--cds-text-secondary)">~' + hoursRemainMid + 'h · ' + questionsAsked + ' question' + (questionsAsked!==1?'s':'') + ' in the sections below</div>' +
+            '</div>' +
+          '</div>' +
+
+        '</div>' +
+      '</div>' +
+
+      // ── Zone 3: IBM Consulting Advantage credit ───────────────────────────
+      '<div style="padding:var(--s3) var(--s5);display:flex;align-items:center;gap:var(--s3)">' +
+        '<span class="ica-hex" style="width:14px;height:14px;flex-shrink:0"></span>' +
+        '<span style="font-size:11px;color:var(--cds-text-placeholder);letter-spacing:.32px">' +
+          'Powered by <strong style="color:var(--cds-text-secondary)">IBM Consulting Advantage Agentic Studio</strong>' +
+          ' &nbsp;·&nbsp; All content derived from your documents and your answers only' +
+        '</span>' +
+      '</div>' +
+
+      noteHtml +
+    '</div>';
+
+  // Auto-detected summary
+  const kf = [["candidateName","Candidate Name"],["clientName","Client"],["programTitle","Program"],
+    ["tcvManaged","TCV Managed"],["startDate","Start"],["endDate","End"],["primaryRole","Role"],["fteTotal","FTEs"]];
+  // Detected table — built with string concat to avoid nested template literals
+  const tableRows = kf.map(([key,label]) => {
+    const val  = ff[key], conf = fc[key]||0;
+    const cls  = conf>=.7?"high":conf>=.4?"medium":"low";
+    const lbl  = conf>=.7?"High":conf>=.4?"Medium":"Not found";
+    const disp = (val && val!=="—" && val!==null)
+      ? "<strong>" + val + "</strong>"
+      : '<span style="color:var(--cds-text-placeholder)">Not found</span>';
+    return "<tr><td><strong>" + label + "</strong></td><td>" + disp + "</td><td><span class=\"conf-tag " + cls + "\">" + lbl + "</span></td></tr>";
+  }).join("");
+  document.getElementById("detectedTable").innerHTML =
+    '<div class="section-heading">Auto-detected — confirm or correct in the fields below</div>' +
+    '<table class="cds-data-table" style="margin-bottom:var(--s5)">' +
+      "<thead><tr><th>Field</th><th>Detected Value</th><th>Confidence</th></tr></thead>" +
+      "<tbody>" + tableRows + "</tbody>" +
+    "</table>";
+
+  const form = document.getElementById("gapForm");
+  form.innerHTML = `<div class="cds-notification cds-notification-info" style="margin-bottom:var(--s5)">
+    <span class="notif-icon">ℹ</span>
+    <div class="notif-body"><strong>How this works:</strong> Fill in short notes in each section below — a few sentences is enough.
+    The AI will use your notes to write full professional CPM-quality content for every template section.
+    Complexity factors are mandatory — fill at least 3.</div>
+  </div>`;
+
+  // Build and render micro-prompt groups
+  buildMicroGroups(ff, fc, qs).forEach((group, gi) => {
+    const detectedBanner = group.detected
+      ? `<div class="micro-detected">✓ AI detected: <strong style="margin-left:4px">${group.detected}</strong></div>`
+      : "";
+    const prompts = group.prompts.map((p, pi) => {
+      // Coerce to string first — agent may return objects/arrays for prefill values
+      const ph = String(p.placeholder||"").replace(/`/g,"'").replace(/"/g,"'");
+      const pf = String(p.prefill!=null ? (typeof p.prefill==="object" ? JSON.stringify(p.prefill) : p.prefill) : "")
+                   .replace(/`/g,"'").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+      return `
+      <div class="micro-prompt">
+        <div class="micro-label">${p.label}${p.required?'<span class="req"> *</span>':''}
+          ${p.hint?`<span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--cds-text-secondary);font-size:11px;margin-left:4px">— ${p.hint}</span>`:""}
+        </div>
+        ${p.type==="textarea"
+          ? `<textarea class="cds-textarea" id="mp_${group.id}_${pi}" rows="${p.rows||2}" placeholder="${ph}" oninput="updateGateCheck()">${pf}</textarea>`
+          : `<input class="cds-input" type="text" id="mp_${group.id}_${pi}" value="${pf}" placeholder="${ph}" oninput="updateGateCheck()">`
+        }
+      </div>`;
+    }).join("");
+    const el = document.createElement("div");
+    el.className = "micro-group";
+    el.dataset.groupId = group.id;
+    el.innerHTML = `
+      <div class="micro-group-header">
+        <div class="micro-group-num">${gi+1}</div>
+        <div class="micro-group-title">${group.title}</div>
+        <span class="priority-tag priority-${group.priority||"important"}">${(group.priority||"important").toUpperCase()}</span>
+      </div>
+      ${detectedBanner}
+      <div class="micro-prompts">${prompts}</div>`;
+    form.appendChild(el);
+  });
+
+  // ── Smart complexity section — AI-derived + confirm + add ──────────────────
+  const groupNum = form.querySelectorAll(".micro-group").length + 1;
+  const rawCF    = ff.complexityFactors;
+  const cfArray  = Array.isArray(rawCF) ? rawCF
+                 : (rawCF && typeof rawCF === "object") ? Object.values(rawCF)
+                 : [];
+
+  // Derived: agent found these with real content
+  let derivedCF = cfArray.filter(c =>
+    c && c.factor && (safeStr(c.elaboration).length > 5 || safeStr(c.actions).length > 5)
+  );
+
+  // ── Client-side fallback: if agent returned nothing, derive from text ────────
+  if (derivedCF.length === 0) {
+    const text = (S.extractedText + " " + safeStr(ff.scopeAndResponsibilities)).toLowerCase();
+    const proj = S.selectedProject?.title || "";
+    derivedCF = clientDeriveComplexity(text, proj, ff);
+    if (derivedCF.length > 0) {
+      addLog("info", `Client-side: derived ${derivedCF.length} complexity factor(s) from document text`);
+    }
+  }
+
+  // State: all complexity factors the candidate has confirmed/added
+  window._cfState = {};
+
+  // Pre-populate from derived
+  derivedCF.forEach(c => {
+    const key = normaliseCFKey(c.factor);
+    if (key) window._cfState[key] = {
+      factor: c.factor, name: getCFName(c.factor),
+      elaboration: safeStr(c.elaboration),
+      actions:     safeStr(c.actions),
+      derived: true, editing: false,
+    };
+  });
+
+  const cmDiv = document.createElement("div");
+  cmDiv.className = "complexity-section";
+  cmDiv.id = "complexitySection";
+  form.appendChild(cmDiv);
+  renderComplexitySection(groupNum, derivedCF.length);
+
+  document.getElementById("qualityGate").style.display = "block";
+  updateComplexityCount();
+  updateGateCheck();
+
+  } catch(err) {
+    console.error("renderGapForm crash:", err);
+    document.getElementById("gapForm").innerHTML = `
+      <div class="cds-notification cds-notification-error">
+        <span class="notif-icon">✕</span>
+        <div class="notif-body">
+          <strong>Form rendering error:</strong> ${err.message}<br>
+          <button class="cds-btn cds-btn-ghost" style="margin-top:var(--s3)" onclick="renderGapForm(S.agentAnalysis)">Retry</button>
+        </div>
+      </div>`;
+  }
+}
+
+function buildMicroGroups(ff, fc, agentQs) {
+  const proj = S.selectedProject?.title || "this program";
+  const groups = [];
+
+  if (!ff.candidateName||!ff.email||!ff.serviceLine) {
+    groups.push({ id:"basics", title:"Your Details", priority:"critical",
+      detected: ff.candidateName||null,
+      prompts:[
+        {label:"Full name", required:true, type:"text", prefill:ff.candidateName||"", placeholder:"e.g. Satya Mishra"},
+        {label:"IBM email", required:true, type:"text", prefill:ff.email||"", placeholder:"satya.mishra@ibm.com"},
+        {label:"Service Line", required:true, type:"text", prefill:ff.serviceLine||"", placeholder:"e.g. Hybrid Cloud & Data"},
+        {label:"Practice / team", required:false, type:"text", prefill:ff.practice||"", placeholder:"e.g. AI & Analytics"},
+      ]
+    });
+  }
+
+  if (!ff.tcvTotal||!ff.tcvManaged||!ff.startDate) {
+    groups.push({ id:"program_basics", title:"Program Numbers", priority:"critical",
+      detected: ff.tcvManaged?`TCV Managed: ${safeStr(ff.tcvManaged)}`:null,
+      prompts:[
+        {label:"Total program TCV ($M)", required:true, type:"text", prefill:safeStr(ff.tcvTotal), placeholder:"e.g. 8.5"},
+        {label:"TCV you personally managed ($M)", required:true, type:"text", prefill:safeStr(ff.tcvManaged), placeholder:"e.g. 5.2"},
+        {label:"Start date (MM/YYYY)", required:true, type:"text", prefill:safeStr(ff.startDate), placeholder:"e.g. 01/2022"},
+        {label:"End date (MM/YYYY)", required:true, type:"text", prefill:safeStr(ff.endDate), placeholder:"e.g. 12/2023"},
+        {label:"Team size — total FTEs (onshore / offshore / contract)", required:true, type:"text",
+          prefill:ff.fteTotal?`${safeStr(ff.fteTotal)} (${safeStr(ff.fteOnshore)||"?"} onshore, ${safeStr(ff.fteOffshore)||"?"} offshore)`:"",
+          placeholder:"e.g. 45 total (10 onshore, 30 offshore, 5 contract)"},
+      ]
+    });
+  }
+
+  groups.push({ id:"candidate_scope", title:`Your Personal Scope on ${proj}`, priority:"critical",
+    detected: ff.scopeAndResponsibilities?"Some scope found in documents":null,
+    prompts:[
+      {label:"What was the program trying to achieve for the client?", required:true, type:"textarea", rows:2,
+        hint:"1-2 sentences on the business goal", prefill:"",
+        placeholder:"e.g. " + proj + " aimed to build a cloud-native digital banking platform replacing legacy systems."},
+      {label:"What did YOU specifically own and deliver?", required:true, type:"textarea", rows:3,
+        hint:"Your scope, your team, your accountability — not the overall project",
+        prefill:safeStr(ff.scopeAndResponsibilities),
+        placeholder:"e.g. I was accountable for end-to-end delivery of 5 journeys across 2 drops. Managed 45 FTEs, financial performance and client relationship."},
+      {label:"Hardest challenge you personally had to solve?", required:true, type:"textarea", rows:2,
+        hint:"One specific situation — what happened, what you did",
+        prefill:"",
+        placeholder:"e.g. Program was in red when I joined. I restructured sprint governance and prioritised the backlog. Moved 2 journeys to UAT within 6 months."},
+    ]
+  });
+
+  groups.push({ id:"financials", title:"Financial Performance", priority:"critical",
+    detected: ff.gpPercent?`GP%: ${safeStr(ff.gpPercent)}`:ff.financialBaseline?"Some financial data found":null,
+    prompts:[
+      {label:"Revenue, Cost, GP, GP% (rough numbers are fine)", required:true, type:"text",
+        hint:"e.g.  Revenue $5M | Cost $3.5M | GP $1.5M | GP% 30%",
+        prefill:ff.revenueActual?`Revenue ${safeStr(ff.revenueActual)} | Cost ${safeStr(ff.costActual)||"—"} | GP ${safeStr(ff.gpActual)||"—"} | GP% ${safeStr(ff.gpPercent)||"—"}`:"",
+        placeholder:"Revenue $5M | Cost $3.5M | GP $1.5M | GP% 30%"},
+      {label:"Within approved price case? (within ~5%)", required:true, type:"text",
+        prefill:"", placeholder:"e.g. Yes, within approved GP. / Recovered from -17% to +31% during tenure."},
+      {label:"Financial tracking system used", required:false, type:"text",
+        prefill:safeStr(ff.financialManagementSystem)||"IBM IPPF", placeholder:"e.g. IBM IPPF monthly + weekly internal burn tracking"},
+    ]
+  });
+
+  groups.push({ id:"outcomes", title:"Outcomes & Results", priority:"critical",
+    detected: ff.projectOutcomes?"Some outcomes found in documents":null,
+    prompts:[
+      {label:"Key delivery milestones achieved", required:true, type:"textarea", rows:2,
+        prefill:safeStr(ff.contractualDeliverables),
+        placeholder:"e.g. 2 journeys to UAT, 3 demo-ready, go-live for T1 & T2, SCADA integration complete"},
+      {label:"Client satisfaction — NPS, CSAT, or any feedback?", required:false, type:"text",
+        prefill:"", placeholder:"e.g. CSAT 9.6/10 average, NPS +42, escalations reduced to zero"},
+      {label:"Business value or savings delivered", required:false, type:"text",
+        prefill:"", placeholder:"e.g. 20+ FTE savings, 30% process improvement, platform ready for 500K users"},
+      {label:"IBM recognition or repeat business?", required:false, type:"text",
+        prefill:safeStr(ff.otherOutcomes), placeholder:"e.g. IBM Delivery Excellence Award, client extended for Phase 2"},
+    ]
+  });
+
+  groups.push({ id:"leadership", title:"2–3 Leadership Examples (STAR format)", priority:"important",
+    detected: null,
+    prompts:[
+      {label:"Example 1 — Customer relationship or stakeholder challenge", required:true, type:"textarea", rows:3,
+        hint:"What happened → what YOU did → measurable outcome",
+        prefill:"",
+        placeholder:"e.g. Client threatened to cancel after 2 slipped milestones. I introduced weekly CIO briefings and a transparent recovery plan. Escalations stopped within 4 weeks."},
+      {label:"Example 2 — Problem solving, decision under pressure, or navigating change", required:true, type:"textarea", rows:3,
+        hint:"A decision you made that directly impacted delivery, finances or the team",
+        prefill:"",
+        placeholder:"e.g. CBS dependency caused 6-week delay. I parallelised non-blocked tracks and restructured team. Recovered 4 weeks by quarter end."},
+      {label:"Example 3 — Mentoring, team building or delegation (optional)", required:false, type:"textarea", rows:2,
+        hint:"How you grew someone or handled a team challenge",
+        prefill:"",
+        placeholder:"e.g. Identified under-utilised BA, gave workstream lead role with coaching. He ran independently within 2 months."},
+    ]
+  });
+
+  return groups;
+}
+
+// ── Complexity helper fns ─────────────────────────────────────────────────────
+const CF_NAME_MAP = {
+  foak:"First-of-a-Kind (FOAK)", csi:"Complex Systems Integration",
+  cbdm:"Cross-Brand / Multi-LOB", pd:"Project Delivery",
+  ce:"Client Environment", ct:"Client Transformation",
+  cts:"Contract Terms / Structure", ide:"Inclusion by Delivery Excellence",
+};
+function normaliseCFKey(factorName) {
+  const n = (factorName||"").toLowerCase();
+  if (n.includes("first")||n.includes("foak"))   return "foak";
+  if (n.includes("integrat")||n.includes("csi"))  return "csi";
+  if (n.includes("cross")||n.includes("multi"))   return "cbdm";
+  if (n.includes("delivery")||n.includes("proj")) return "pd";
+  if (n.includes("client env")||n.includes("psu")||n.includes("regulat")||n.includes("environ")) return "ce";
+  if (n.includes("transform")||n.includes("change")) return "ct";
+  if (n.includes("contract")||n.includes("term")||n.includes("commercial")) return "cts";
+  if (n.includes("inclusion")||n.includes("excellence")) return "ide";
+  return null;
+}
+
+// ── Client-side keyword-based complexity derivation ───────────────────────────
+// Fallback when agent returns empty complexityFactors.
+// Reads extracted text + known project fields and maps to IBM 8 categories.
+function clientDeriveComplexity(text, projTitle, ff) {
+  const t   = text.toLowerCase();
+  const pt  = projTitle.toLowerCase();
+  const derived = [];
+
+  const rules = [
+    {
+      key:"foak", name:"First-of-a-Kind (FOAK)",
+      signals:["first of its kind","first time","no template","built from scratch","pioneered",
+               "greenfield","replaced the","lvts","large value transfer","moderniz","new payment",
+               "first gbs","foak","payment modernization","new to ibm","new to client"],
+      elab: (t,pt) => {
+        if (t.includes("lvts")||t.includes("large value transfer"))
+          return "Lynx replaced Canada's legacy LVTS system — first national real-time payment rail of this kind in Canada. IBM had not delivered this type of industry-wide payment modernization before.";
+        if (t.includes("moderniz"))
+          return `${projTitle} was a first-of-its-kind modernization initiative with no prior IBM template to follow.`;
+        return `${projTitle} introduced new capabilities not previously delivered at IBM or this client.`;
+      },
+      actions: "Established testing framework and documentation from scratch. Built delivery methodology tailored to the engagement with no prior template to reference.",
+    },
+    {
+      key:"csi", name:"Complex Systems Integration",
+      signals:["multiple systems","interfaces","iso 20022","message format","participant bank",
+               "different tech stack","real.time","real time","api","middleware","integrat",
+               "connect","interoperab","multiple bank","all canadian bank","payment chain"],
+      elab: (t,pt) => {
+        if (t.includes("participant bank")||t.includes("all canadian bank"))
+          return "Lynx required connectivity with all major Canadian financial institutions, each with different tech stacks, message formats, and integration standards. ISO 20022 adoption required validation across all participants simultaneously.";
+        if (t.includes("iso 20022"))
+          return "ISO 20022 message format had to be validated across all participant institutions with different system landscapes.";
+        return `${projTitle} involved integration across multiple systems, vendors and platforms with complex interdependencies.`;
+      },
+      actions: "Structured integration testing in layers — internal SIT first, then cross-bank E2E. Established interface ownership and traceability to quickly identify gaps.",
+    },
+    {
+      key:"cbdm", name:"Cross-Brand / Multi-LOB",
+      signals:["cross-functional","cross.location","multiple location","onshore.offshore",
+               "multiple team","multi.vendor","multiple stakeholder","cross-location",
+               "built and managed teams","teams across location","internal and external"],
+      elab: (t,pt) =>
+        `${projTitle} required coordination across cross-functional and cross-location teams, managing multiple internal and external stakeholders with different priorities and governance processes.`,
+      actions: "Built and managed teams across locations. Established clear communication channels and governance cadence to align all parties.",
+    },
+    {
+      key:"pd", name:"Project Delivery",
+      signals:["national go.live","industry uat","all phases","sprint.*sit.*e2e","end.to.end",
+               "complex requirement","compressed timeline","large scale","multiple phase",
+               "monitor.*scope.*time.*cost","on time and within budget","replaced.*2021"],
+      elab: (t,pt) => {
+        if (t.includes("all canadian")||t.includes("industry uat")||t.includes("national"))
+          return "National-scale delivery with all Canadian banks participating simultaneously in industry UAT. Any single bank delay could impact the entire national go-live. Extremely high-visibility with Bank of Canada oversight.";
+        return `${projTitle} involved large-scale delivery with complex phasing, multiple release types and compressed timelines requiring rigorous delivery governance.`;
+      },
+      actions: "Managed end-to-end delivery across all test phases (Sprint, SIT, E2E, BAT, Performance). Monitored scope, time, cost and quality throughout. Presented weekly progress reports to leadership.",
+    },
+    {
+      key:"ce", name:"Client Environment",
+      signals:["bank of canada","regulatory","compliance","regulated","risk and compliance",
+               "sign.off","politics","nobody wanted","careful environment","financial institution",
+               "insurance","banking","government","psu","watched closely"],
+      elab: (t,pt) => {
+        if (t.includes("bank of canada")||t.includes("all canadian bank")||t.includes("participant bank"))
+          return "Regulated banking environment with Bank of Canada oversight. All participant banks had independent risk and compliance sign-off requirements. Political sensitivity was high — no bank wanted to be seen as the cause of a national payment system delay.";
+        if (t.includes("insurance"))
+          return "Highly regulated insurance and banking environment with strict compliance and audit requirements.";
+        return `${projTitle} operated in a regulated financial services environment with complex stakeholder governance and compliance requirements.`;
+      },
+      actions: "Managed each bank's compliance process independently. Maintained transparent communication to prevent individual bank issues from cascading. Escalated proactively to minimise regulatory risk.",
+    },
+    {
+      key:"ct", name:"Client Transformation",
+      signals:["transform","moderniz","replaced","legacy","agile","new operating","digital",
+               "change management","new way","adopt","cultural"],
+      elab: (t,pt) =>
+        `${projTitle} represented a major transformation for the client — replacing legacy systems with modern architecture and requiring adoption of new processes across multiple teams and institutions.`,
+      actions: "Managed change through structured communication, documentation of new business flows and collaborative stakeholder engagement throughout the transition.",
+    },
+  ];
+
+  for (const rule of rules) {
+    const matched = rule.signals.some(sig => {
+      try { return new RegExp(sig, "i").test(t); } catch { return t.includes(sig); }
+    });
+    if (matched) {
+      derived.push({
+        factor:      rule.name,
+        elaboration: typeof rule.elab === "function" ? rule.elab(t, projTitle) : rule.elab,
+        actions:     rule.actions,
+      });
+    }
+    if (derived.length >= 5) break; // cap at 5 auto-derived
+  }
+
+  return derived;
+}
+function getCFName(factorName) {
+  const key = normaliseCFKey(factorName);
+  return key ? CF_NAME_MAP[key] : (factorName||"Custom Factor");
+}
+
+function renderComplexitySection(groupNum, derivedCount) {
+  const cmDiv = document.getElementById("complexitySection");
+  if (!cmDiv) return;
+  const state   = window._cfState || {};
+  const entries = Object.entries(state);
+  const count   = entries.length;
+  const met     = count >= 3;
+
+  // Which COMPLEXITY_FACTORS IDs are already used
+  const usedIds = new Set(Object.keys(state));
+
+  let html = `
+    <div class="complexity-header">
+      ⚙ ${groupNum}. Complexity Factors
+      <span class="priority-tag priority-critical" style="margin-left:auto">CRITICAL — minimum 3</span>
+    </div>`;
+
+  if (derivedCount > 0 && entries.length > 0) {
+    html += `<div class="cds-notification cds-notification-success" style="margin:0;border:none;border-bottom:1px solid var(--cds-border-subtle-01)">
+      <span class="notif-icon">✓</span>
+      <div class="notif-body">
+        <strong>AI identified ${derivedCount} complexity factor${derivedCount>1?"s":""} from your documents.</strong>
+        Review each one — edit if the wording needs adjusting, or add more below.
+      </div>
+    </div>`;
+  } else {
+    html += `<div class="cds-notification cds-notification-info" style="margin:0;border:none;border-bottom:1px solid var(--cds-border-subtle-01)">
+      <span class="notif-icon">ℹ</span>
+      <div class="notif-body">
+        Add at least 3 complexity factors. For each: briefly describe what made it complex and what you did about it.
+        The AI will write this professionally — short notes are enough.
+      </div>
+    </div>`;
+  }
+
+  // Render each confirmed factor as a card
+  html += '<div class="cf-derived-list" id="cfCardList">';
+  entries.forEach(([key, cf]) => {
+    const editing = cf.editing;
+    html += `
+      <div class="cf-card ${cf.derived?"derived":"candidate"}" id="cfc_${key}">
+        <div class="cf-card-header">
+          <span class="cf-card-badge" style="${cf.derived?"background:var(--cds-support-success-bg);color:var(--cds-tag-green-text)":"background:var(--cds-tag-blue-bg);color:var(--cds-tag-blue-text)"}">
+            ${cf.derived?"✓ AI Found":"✚ Added"}
+          </span>
+          <span class="cf-card-name">${cf.name||cf.factor}</span>
+          <button class="cf-card-edit" onclick="toggleCFEdit('${key}')">${editing?"Done editing":"✏ Edit"}</button>
+          <button class="cf-card-edit" style="color:var(--cds-support-error)" onclick="removeCF('${key}')">✕</button>
+        </div>
+        <div class="cf-card-body ${editing?"":""}">
+          <div>
+            <div class="cf-field-label">What made it complex?</div>
+            ${editing
+              ? `<textarea id="cf_elab_${key}" oninput="saveCFEdit('${key}')" placeholder="Describe what made this complex...">${cf.elaboration}</textarea>`
+              : `<div class="cf-derived-text">${cf.elaboration||'<span style="color:var(--cds-text-placeholder)">Click Edit to add detail</span>'}</div>`
+            }
+          </div>
+          <div>
+            <div class="cf-field-label">What did YOU do to manage it?</div>
+            ${editing
+              ? `<textarea id="cf_act_${key}" oninput="saveCFEdit('${key}')" placeholder="Describe your specific actions...">${cf.actions}</textarea>`
+              : `<div class="cf-derived-text">${cf.actions||'<span style="color:var(--cds-text-placeholder)">Click Edit to add detail</span>'}</div>`
+            }
+          </div>
+        </div>
+      </div>`;
+  });
+  html += '</div>';
+
+  // Add factor picker — only show unused IBM categories + a free-text option
+  const unused = COMPLEXITY_FACTORS.filter(cf => !usedIds.has(cf.id));
+  if (unused.length > 0 || count < 3) {
+    html += `
+      <div class="cf-add-section">
+        <div class="cf-add-label">${count>=3?"Add another factor (optional)":"Add a complexity factor ↓"}</div>
+        <div class="cf-picker">
+          ${COMPLEXITY_FACTORS.map(cf => `
+            <button class="cf-chip ${usedIds.has(cf.id)?"used":""}"
+              onclick="addCFFromChip('${cf.id}','${cf.name.replace(/'/g,"\\\\'")}')">
+              + ${cf.name}
+            </button>`).join("")}
+        </div>
+      </div>`;
+  }
+
+  // Counter
+  html += `
+    <div class="complexity-count" id="complexityCount">
+      <span class="count-num ${met?"met":""}" id="cfCountNum">${count}</span>
+      <span>of ${Math.max(count,8)} factors confirmed &nbsp;·&nbsp;
+        ${met
+          ? `<span style="color:var(--cds-support-success);font-weight:600">✓ Minimum met</span>`
+          : `need ${3-count} more`
+        }
+      </span>
+    </div>`;
+
+  cmDiv.innerHTML = html;
+  updateGateCheck();
+}
+
+function toggleCFEdit(key) {
+  if (!window._cfState[key]) return;
+  window._cfState[key].editing = !window._cfState[key].editing;
+  const gi = form.querySelectorAll(".micro-group").length + 1;
+  renderComplexitySection(gi, Object.values(window._cfState).filter(c=>c.derived).length);
+}
+
+function saveCFEdit(key) {
+  if (!window._cfState[key]) return;
+  const elab = document.getElementById(`cf_elab_${key}`)?.value || "";
+  const act  = document.getElementById(`cf_act_${key}`)?.value  || "";
+  window._cfState[key].elaboration = elab;
+  window._cfState[key].actions     = act;
+  updateGateCheck();
+}
+
+function removeCF(key) {
+  delete window._cfState[key];
+  const gi = form.querySelectorAll(".micro-group").length + 1;
+  renderComplexitySection(gi, Object.values(window._cfState).filter(c=>c.derived).length);
+}
+
+function addCFFromChip(id, name) {
+  if (window._cfState[id]) return; // already added
+  window._cfState[id] = {
+    factor: name, name: name,
+    elaboration: "", actions: "",
+    derived: false, editing: true,
+  };
+  const gi = document.querySelectorAll(".micro-group").length + 1;
+  renderComplexitySection(gi, Object.values(window._cfState).filter(c=>c.derived).length);
+  // Scroll to new card and focus
+  setTimeout(() => {
+    document.getElementById(`cfc_${id}`)?.scrollIntoView({behavior:"smooth", block:"center"});
+    document.getElementById(`cf_elab_${id}`)?.focus();
+  }, 100);
+}
+
+function updateComplexityCount() {
+  const count = Object.keys(window._cfState||{}).length;
+  const num = document.getElementById("cfCountNum");
+  if (num) { num.textContent = count; num.classList.toggle("met", count>=3); }
+  updateGateCheck();
+  return count;
+}
+
+function updateGateCheck() {
+  const ff     = S.agentAnalysis?.filled_fields || {};
+  const cfCount = Object.keys(window._cfState||{}).length;
+
+  const scope   = v("mp_candidate_scope_1") || safeStr(ff.scopeAndResponsibilities) || "";
+  const fin     = v("mp_financials_0")      || safeStr(ff.revenueActual) || "";
+  const outcome = v("mp_outcomes_0")        || safeStr(ff.projectOutcomes) || "";
+  const lead1   = v("mp_leadership_0")      || "";
+  const lead2   = v("mp_leadership_1")      || "";
+
+  const checks = [
+    {label:"Candidate scope described",      pass:scope.length>30,                    icon:"📄"},
+    {label:"Financial figures provided",     pass:fin.length>5,                       icon:"💰"},
+    {label:"Delivery outcomes mentioned",    pass:outcome.length>20,                  icon:"📈"},
+    {label:"At least 1 leadership example",  pass:lead1.length>20||lead2.length>20,  icon:"🎯"},
+    {label:"3+ complexity factors confirmed", pass:cfCount>=3,                        icon:"⚙",
+      detail: cfCount<3 ? `${cfCount}/3 — add ${3-cfCount} more above` : `${cfCount} confirmed ✓`},
+  ];
+
+  const allPass = checks.every(c=>c.pass);
+  const gi = document.getElementById("gateItems");
+  if (gi) gi.innerHTML = checks.map(c=>`
+    <div class="gate-item">
+      <span class="gate-icon">${c.pass?"✅":"⭕"}</span>
+      <span class="gate-label">${c.label}${c.detail?' <span style="font-size:12px;color:var(--cds-text-secondary)">— '+c.detail+'</span>':""}</span>
+      <span class="gate-status ${c.pass?"pass":"fail"}">${c.pass?"Ready":"Needed"}</span>
+    </div>`).join("");
+
+  const btn = document.getElementById("generateBtn");
+  if (btn) {
+    btn.disabled = false;
+    btn.innerHTML = allPass
+      ? `Generate Professional Draft <span class="cds-btn-icon">→</span>`
+      : `Generate Draft (${checks.filter(c=>!c.pass).length} item${checks.filter(c=>!c.pass).length>1?"s":""} recommended) <span class="cds-btn-icon">→</span>`;
+  }
+}
+
+function validateAndGenerate() {
+  const cfCount = Object.keys(window._cfState||{}).length;
+  if (cfCount < 3) {
+    const ok = confirm(`You have ${cfCount} complexity factor${cfCount===1?"":"s"} confirmed.\n\nCPM submission requires at least 3.\n\nClick OK to add more, or Cancel to generate anyway.`);
+    if (ok) { document.getElementById("complexitySection")?.scrollIntoView({behavior:"smooth"}); return; }
+  }
+  runComplete();
+}
+
+function collectAnswers() {
+  const ff = S.agentAnalysis?.filled_fields || {};
+  const ans = {};
+
+  ans.candidateName = v("mp_basics_0") || ff.candidateName;
+  ans.email         = v("mp_basics_1") || ff.email;
+  ans.serviceLine   = v("mp_basics_2") || ff.serviceLine;
+  ans.practice      = v("mp_basics_3") || ff.practice;
+
+  ans.tcvTotal   = v("mp_program_basics_0") || ff.tcvTotal;
+  ans.tcvManaged = v("mp_program_basics_1") || ff.tcvManaged;
+  ans.startDate  = v("mp_program_basics_2") || ff.startDate;
+  ans.endDate    = v("mp_program_basics_3") || ff.endDate;
+  ans.fteRaw     = v("mp_program_basics_4") || ff.fteTotal;
+
+  ans.program_goal      = v("mp_candidate_scope_0");
+  ans.candidate_scope   = v("mp_candidate_scope_1");
+  ans.candidate_challenge = v("mp_candidate_scope_2");
+
+  ans.financial_summary  = v("mp_financials_0");
+  ans.financial_variance = v("mp_financials_1");
+  ans.financial_system   = v("mp_financials_2");
+
+  ans.outcome_milestones   = v("mp_outcomes_0");
+  ans.outcome_csat         = v("mp_outcomes_1");
+  ans.outcome_value        = v("mp_outcomes_2");
+  ans.outcome_recognition  = v("mp_outcomes_3");
+
+  ans.leadership_star1 = v("mp_leadership_0");
+  ans.leadership_star2 = v("mp_leadership_1");
+  ans.leadership_star3 = v("mp_leadership_2");
+
+  // Complexity — read from _cfState (AI-derived + candidate-added/edited)
+  ans.complexityFactors = Object.values(window._cfState || {})
+    .filter(c => c.factor)
+    .map(c => ({
+      factor:      c.name || c.factor,
+      elaboration: c.elaboration || "",
+      actions:     c.actions     || "",
+    }))
+    .filter(c => c.elaboration || c.actions);
+
+  return ans;
+}
+
+
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STEP 6: Agent complete
+// ─────────────────────────────────────────────────────────────────────────────
+async function runComplete() {
+  // Collect all micro-prompt answers + complexity matrix
+  const answers = collectAnswers();
+  unlock(6,false); goTo(6);
+  setConn("connecting","Agentic Studio — Writing...");
+
+  const prog=document.getElementById("completeProg"), msg=document.getElementById("completeMsg");
+  const steps=[[15,"Merging answers with extracted data..."],[30,"Mapping complexity to IBM categories..."],[48,"Writing leadership behaviours (STAR format)..."],[62,"Structuring financial outcomes..."],[76,"Enhancing scope to CPM standard..."],[88,"Finalising professional content..."]];
+  let si=0;
+  const tick=setInterval(()=>{
+    if(si>=steps.length){clearInterval(tick);return;}
+    const[p,m]=steps[si++]; prog.style.width=`${p}%`; msg.textContent=m; addStepLog("completeLog",m,"agent");
+  },1100);
+
+  try {
+    let result;
+    if(window.cpmAPI&&S.apiKey){
+      const r=await window.cpmAPI.agentComplete({filledFields:S.agentAnalysis?.filled_fields||{},answers,apiKey:S.apiKey});
+      if(!r.success) throw new Error(r.error);
+      result=r.data;
+    } else {
+      await delay(1800); result=mockComplete(S.agentAnalysis?.filled_fields||{},answers);
+    }
+    clearInterval(tick); prog.style.width="100%"; prog.classList.add("complete");
+    setConn("connected","Agentic Studio — Connected");
+    addStepLog("completeLog",`✅ Draft complete — quality: ${result.draft_quality_score||0}%`,"success");
+    S.finalData=result; markDone(5); markDone(6);
+    await delay(600); renderScoring(result);
+  } catch(err) {
+    clearInterval(tick); setConn("disconnected","Agentic Studio — Error");
+    msg.textContent="Error"; addStepLog("completeLog",`❌ ${err.message}`,"error");
+    document.getElementById("completeLog").innerHTML+=`<div style="margin-top:var(--s4)"><div class="cds-notification cds-notification-error"><span class="notif-icon">✕</span><div>${err.message}</div></div><button class="cds-btn cds-btn-ghost" style="margin-top:var(--s3)" onclick="goTo(5)">← Try Again</button></div>`;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STEP 7: Profile Scoring (Use Case 4)
+// ─────────────────────────────────────────────────────────────────────────────
+function renderScoring(result) {
+  unlock(6); goTo(7);
+  const d=result.filled_fields||result;
+
+  function scoreSection(label, field, checks) {
+    let score=0, total=checks.length, notes=[];
+    checks.forEach(([test, pts, note])=>{
+      if(test) { score+=pts; } else { notes.push(note); }
+    });
+    const pct=Math.round((score/checks.reduce((a,[,p])=>a+p,0))*100);
+    const cls=pct>=70?"s-high":pct>=40?"s-medium":"s-low";
+    return {label,pct,cls,notes};
+  }
+
+  const sections=[
+    scoreSection("Candidate Details","",[
+      [!!(d.candidateName),2,"Candidate name missing"],
+      [!!(d.email),1,"Email missing"],
+      [!!(d.market),1,"Market missing"],
+      [!!(d.serviceLine),1,"Service line missing"],
+      [!!(d.primaryRole),2,"Primary role missing"],
+    ]),
+    scoreSection("Profile Summary","",[
+      [!!(d.clientName),2,"Client name missing"],
+      [!!(d.tcvManaged),3,"TCV managed missing — required"],
+      [!!(d.isComplex),2,"Complex Y/N missing"],
+      [!!(d.startDate&&d.endDate),2,"Project dates missing"],
+      [!!(d.fteTotal),2,"FTE count missing"],
+    ]),
+    scoreSection("Scope & Responsibilities","",[
+      [!!(d.scopeAndResponsibilities&&d.scopeAndResponsibilities.length>100),4,"Scope description too brief — needs detail"],
+      [!!(d.phases&&d.phases.length>0),3,"Phase details missing"],
+      [!!(d.scopeAndResponsibilities&&/accountab|responsible|managed|led/.test((d.scopeAndResponsibilities||"").toLowerCase())),3,"Scope doesn't clearly state candidate accountability"],
+    ]),
+    scoreSection("Financial Performance","",[
+      [!!(d.financialBaseline),3,"Financial baseline (FMB) missing"],
+      [!!(d.revenueActual&&d.gpPercent),4,"Revenue and GP% actuals missing — required"],
+      [!!(d.varianceReason),2,"Variance explanation missing"],
+      [!!(d.commercialConstruct),1,"Commercial construct not described"],
+    ]),
+    scoreSection("Leadership Behaviours","",[
+      [!!(d.leadershipBehaviors?.customerRelationships),1,"Customer Relationships missing"],
+      [!!(d.leadershipBehaviors?.negotiation),1,"Negotiation missing"],
+      [!!(d.leadershipBehaviors?.problemSolving),1,"Problem Solving missing"],
+      [!!(d.leadershipBehaviors?.mentoring),2,"Mentoring missing — mandatory for SCPM"],
+      [!!(d.leadershipBehaviors?.leadership),1,"Leadership missing"],
+    ]),
+    scoreSection("Complexity Factors","",[
+      [!!(Array.isArray(d.complexityFactors)&&d.complexityFactors.length>=2),4,"Need at least 2 complexity factors (3 for CPM)"],
+      [!!(Array.isArray(d.complexityFactors)&&d.complexityFactors.some(c=>c.elaboration&&String(c.elaboration).length>50)),3,"Complexity descriptions too brief"],
+      [!!(Array.isArray(d.complexityFactors)&&d.complexityFactors.some(c=>c.actions&&String(c.actions).length>30)),3,"Actions to manage complexity missing"],
+    ]),
+    scoreSection("Project Outcomes","",[
+      [!!(d.projectOutcomes&&d.projectOutcomes.length>80),4,"Project outcomes too brief — needs quantified results"],
+      [!!(d.otherOutcomes||(d.projectOutcomes||"").includes("NPS")||(d.projectOutcomes||"").includes("CSAT")),2,"NPS/CSAT scores not mentioned"],
+      [!!(d.lessonsLearned),2,"Lessons learned missing"],
+    ]),
+  ];
+
+  const overall=Math.round(sections.reduce((a,s)=>a+s.pct,0)/sections.length);
+  const overallCls=overall>=70?"s-high":overall>=40?"s-medium":"s-low";
+
+  document.getElementById("scoreBlock").innerHTML=`
+    <div class="cds-notification cds-notification-${overall>=70?"success":overall>=40?"warning":"error"}" style="margin-bottom:var(--s5)">
+      <span class="notif-icon">${overall>=70?"✓":overall>=40?"⚠":"✕"}</span>
+      <div class="notif-body">
+        <strong>Overall Profile Score: ${overall}%</strong> — 
+        ${overall>=70?"Strong draft — ready for export. Review any warnings before submitting.":overall>=40?"Moderate draft — address weak sections below before submitting.":"Profile needs significant improvement. Fill in missing critical sections."}
+      </div>
+    </div>
+
+    <div class="section-heading">Section Scores</div>
+    <div class="score-section">
+      ${sections.map(s=>`
+        <div class="score-item">
+          <span class="score-label">${s.label}</span>
+          <div class="score-bar-track"><div class="score-bar-fill ${s.cls}" style="width:${s.pct}%"></div></div>
+          <span class="score-val">${s.pct}%</span>
+        </div>
+        ${s.notes.length?`<div style="padding:0 0 var(--s3) 0">${s.notes.map(n=>`<div style="font-size:12px;color:var(--cds-support-error);padding:2px 0">⚠ ${n}</div>`).join("")}</div>`:""}
+      `).join("")}
+    </div>`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STEP 8: Review + Export
+// ─────────────────────────────────────────────────────────────────────────────
+function renderReview(result) {
+  unlock(7); goTo(8);
+  const d  = result.filled_fields||result;
+  const lb = d.leadershipBehaviors||{};
+  const cf = Array.isArray(d.complexityFactors)?d.complexityFactors:[];
+
+  // Warnings / quality banner
+  document.getElementById("warningsBlock").innerHTML =
+    (result.warnings||[]).length
+      ? (result.warnings||[]).map(w=>`<div class="cds-notification cds-notification-warning"><span class="notif-icon">⚠</span><div class="notif-body">${w}</div></div>`).join("")
+      : `<div class="cds-notification cds-notification-success"><span class="notif-icon">✓</span><div class="notif-body">
+          Quality: <strong>${result.draft_quality_score||"—"}%</strong> — ${result.draft_quality_note||"Ready to export."}
+         </div></div>`;
+
+  // Edit hint
+  const editHint = `<div class="cds-notification cds-notification-info" style="margin-bottom:var(--s4)">
+    <span class="notif-icon">✏</span>
+    <div class="notif-body"><strong>You can edit any field directly.</strong>
+    Click on any value below to edit it inline. Changes are saved automatically before export.</div>
+  </div>`;
+
+  // Non-editable simple fields
+  const simpleSection = (title, rows) => `
+    <div class="review-group">
+      <div class="review-group-title">${title}</div>
+      ${rows.map(([k,val])=>`<div class="review-row">
+        <div class="review-key">${k}</div>
+        <div class="review-val" contenteditable="true"
+          data-field="${k}" onblur="saveEdit(this,'${k}')"
+          title="Click to edit"
+        >${val&&val!=="—"?val:'<span style="color:var(--cds-text-placeholder)">Not filled</span>'}</div>
+      </div>`).join("")}
+    </div>`;
+
+  const sections = [
+    simpleSection("👤 Candidate Details",[
+      ["Name",d.candidateName],["Email",d.email],["Market",d.market],
+      ["Service Line",d.serviceLine],["Practice",d.practice],["Primary Role",d.primaryRole],
+    ]),
+    simpleSection("📋 Profile Summary",[
+      ["Client",d.clientName],["Program",d.programTitle],["IPPF IDs",d.ippfContractIds],
+      ["Complex (Y/N)",d.isComplex],["TCV Total",d.tcvTotal],["TCV Managed",d.tcvManaged],
+      ["Start Date",d.startDate],["End Date",d.endDate],["FTEs",d.fteTotal],["Manager",d.managerName],
+    ]),
+    simpleSection("📄 Scope & Responsibilities",[["Candidate Scope",d.scopeAndResponsibilities]]),
+    simpleSection("💰 Financial Performance",[
+      ["Revenue",d.revenueActual],["Cost",d.costActual],["GP",d.gpActual],["GP%",d.gpPercent],
+      ["Baseline (FMB)",d.financialBaseline],["Variance Reason",d.varianceReason],
+      ["Commercial Construct",d.commercialConstruct],
+    ]),
+    simpleSection("🎯 Leadership Behaviours",
+      Object.entries(lb).map(([k,val])=>[k.replace(/([A-Z])/g," $1").replace(/^./,c=>c.toUpperCase()),val])
+    ),
+    `<div class="review-group">
+      <div class="review-group-title">⚙ Complexity Factors</div>
+      ${cf.length?cf.map(c=>`<div class="review-row">
+        <div class="review-key">${c.factor}</div>
+        <div class="review-val" contenteditable="true" onblur="saveComplexityEdit(this,'${c.factor}')" title="Click to edit">${c.elaboration||"—"}<br><br><strong>Actions:</strong> ${c.actions||"—"}</div>
+      </div>`).join("")
+      :'<div class="review-row"><div class="review-key">—</div><div class="review-val" style="color:var(--cds-text-placeholder)">No complexity factors added</div></div>'}
+    </div>`,
+    simpleSection("📈 Project Outcomes",[
+      ["Outcomes",d.projectOutcomes],["Other Outcomes / NPS",d.otherOutcomes],["Lessons Learned",d.lessonsLearned],
+    ]),
+  ];
+
+  document.getElementById("reviewBlock").innerHTML = editHint + sections.join("");
+}
+
+// Save inline edit back to finalData
+function saveEdit(el, fieldKey) {
+  if (!S.finalData?.filled_fields) return;
+  const val = el.innerText.trim();
+  // Map display label back to field name
+  const labelToField = {
+    "Name":"candidateName","Email":"email","Market":"market","Service Line":"serviceLine",
+    "Practice":"practice","Primary Role":"primaryRole","Client":"clientName","Program":"programTitle",
+    "IPPF IDs":"ippfContractIds","Complex (Y/N)":"isComplex","TCV Total":"tcvTotal",
+    "TCV Managed":"tcvManaged","Start Date":"startDate","End Date":"endDate","FTEs":"fteTotal",
+    "Manager":"managerName","Candidate Scope":"scopeAndResponsibilities","Revenue":"revenueActual",
+    "Cost":"costActual","GP":"gpActual","GP%":"gpPercent","Baseline (FMB)":"financialBaseline",
+    "Variance Reason":"varianceReason","Commercial Construct":"commercialConstruct",
+    "Outcomes":"projectOutcomes","Other Outcomes / NPS":"otherOutcomes","Lessons Learned":"lessonsLearned",
+    // Leadership behaviors
+    "Customer Relationships":"customerRelationships","Embracing Change":"embracingChange",
+    "Negotiation":"negotiation","Communication Skills":"communicationSkills",
+    "Problem Solving":"problemSolving","Collaboration":"collaboration",
+    "Mentoring":"mentoring","Delegation":"delegation","Leadership":"leadership",
+  };
+  const f = labelToField[fieldKey];
+  if (f) {
+    if (["customerRelationships","embracingChange","negotiation","communicationSkills",
+         "problemSolving","collaboration","mentoring","delegation","leadership"].includes(f)) {
+      if (!S.finalData.filled_fields.leadershipBehaviors) S.finalData.filled_fields.leadershipBehaviors = {};
+      S.finalData.filled_fields.leadershipBehaviors[f] = val;
+    } else {
+      S.finalData.filled_fields[f] = val;
+    }
+    // Visual confirmation
+    el.style.borderBottomColor = "var(--cds-support-success)";
+    setTimeout(()=>{ el.style.borderBottomColor=""; }, 1500);
+  }
+}
+
+function saveComplexityEdit(el, factorName) {
+  if (!S.finalData?.filled_fields?.complexityFactors) return;
+  const cf = S.finalData.filled_fields.complexityFactors;
+  const row = cf.find(c=>c.factor===factorName);
+  if (row) {
+    const text = el.innerText;
+    const actionSplit = text.split(/actions?:/i);
+    row.elaboration = actionSplit[0].trim();
+    if (actionSplit[1]) row.actions = actionSplit[1].trim();
+  }
+}
+
+// ── goToExport — navigate to export page and trigger export ──────────────────
+function goToExport() {
+  markDone(7); unlock(8); goTo(9);
+  exportDoc();
+}
+
+async function exportDoc() {
+  const el=document.getElementById("exportResult");
+  el.innerHTML=`<div class="cds-notification cds-notification-info" style="display:flex;gap:var(--s3);align-items:center"><div class="spinner"></div><div class="notif-body">Generating Word document from IBM CPM template...</div></div>`;
+  try {
+    const fieldData=S.finalData?.filled_fields||S.finalData||{};
+    let res;
+    if(window.cpmAPI) res=await window.cpmAPI.generateDocument({fieldData});
+    else { await delay(1200); res={success:false,error:"DOCX export requires Electron runtime. Run npm start."}; }
+    if(!res.success) throw new Error(res.error);
+    el.innerHTML=`<div class="cds-notification cds-notification-success">
+      <span class="notif-icon">✓</span>
+      <div class="notif-body">
+        <strong>Document saved successfully</strong><br>
+        ${res.filePath}
+        <div style="margin-top:var(--s3);display:flex;gap:var(--s3)">
+          <button class="cds-btn cds-btn-primary" onclick="window.cpmAPI?.openFile('${res.filePath}')">Open Document</button>
+          <button class="cds-btn cds-btn-ghost" onclick="startPackage2()">Start Package 2 →</button>
+        </div>
+      </div>
+    </div>`;
+  } catch(err) {
+    el.innerHTML=`<div class="cds-notification cds-notification-error"><span class="notif-icon">✕</span><div class="notif-body">${err.message}</div></div>`;
+  }
+}
+
+// ── Use Case 2: Package 2 flow ────────────────────────────────────────────────
+function startPackage2() {
+  S.package2Mode = true;
+  S.selectedProject = null;
+  S.agentAnalysis = null;
+  S.finalData = null;
+  [2,3,4,5,6,7,8].forEach(n=>{
+    const b=document.getElementById(`nav${n}`);
+    if(b){ b.classList.remove("done","active"); b.classList.add("locked"); b.onclick=null; }
+  });
+  addLog("info","Starting Package 2 — same documents, new program selection");
+  renderProjectSelection({ projects:S.detectedProjects, recommendation:null, recommendation_reason:"" });
+}
+
+// ── Config ────────────────────────────────────────────────────────────────────
+function openConfig() {
+  document.getElementById("cfg_key").value = S.apiKey;
+  document.getElementById("configModal").classList.add("open");
+}
+function closeConfig() { document.getElementById("configModal").classList.remove("open"); }
+function saveConfig() {
+  S.apiKey = document.getElementById("cfg_key").value.trim();
+  localStorage.setItem("cpm_key", S.apiKey);
+  updateConn();
+  closeConfig();
+  addLog("info", `API key ${S.apiKey ? "saved (" + S.apiKey.length + " chars)" : "cleared"}`);
+}
+
+// ── Mocks ─────────────────────────────────────────────────────────────────────
+function mockDetect() {
+  return {
+    mode:"detect_projects",
+    projects:[
+      { id:"p1", title:"Vodafone UK Cluster — DPE (5 P&Ls)", client:"Vodafone UK",
+        role:"Delivery Project Executive", duration:"Jan 2019 – Jul 2021", tcv:"$20M+ portfolio",
+        summary:"DPE for 5 P&Ls (BI, Watson, Integration, GCP, Cirrus) — full financial and delivery accountability.",
+        suitability:"high", suitability_reason:"Large portfolio TCV, FOAK delivery, 5 contracts, proven GP improvement — strong CPM candidate." },
+      { id:"p2", title:"BIAL Maximo Implementation", client:"Bangalore International Airport",
+        role:"Complex Program Manager", duration:"Feb 2023 – Apr 2024", tcv:null,
+        summary:"CPM for Maximo Asset Management and SCADA IoT integration for airport assets.",
+        suitability:"high", suitability_reason:"Complex IoT + Maximo program, CPM role, stabilised red program — strong candidate." },
+      { id:"p3", title:"Toyota North America — Maximo EAM Upgrade", client:"Toyota Motor",
+        role:"Program Manager", duration:"Jan 2025 – Jan 2026", tcv:null,
+        summary:"Multi-BU multi-country Maximo upgrade (MAS 9.0) covering all North America plants.",
+        suitability:"high", suitability_reason:"Multi-country, multi-IBM-unit cross-brand delivery — high complexity." },
+      { id:"p4", title:"Union Bank of India — Digital Bank Program", client:"Union Bank of India",
+        role:"Program Manager & Sr. Scrum Master", duration:"Apr 2024 – Oct 2024", tcv:null,
+        summary:"Garage delivery of 5 cloud-native digital banking journeys for UBI.",
+        suitability:"medium", suitability_reason:"Good complexity but short duration (6 months) — verify TCV meets clip level." },
+    ],
+    recommendation:"p1",
+    recommendation_reason:"Largest TCV portfolio, FOAK delivery, proven GP recovery, E2E P&L accountability — strongest CPM submission.",
+  };
+}function mockAnalysis(){
+  const proj=S.selectedProject||{};
+  return {
+    mode:"analyze",
+    filled_fields:{
+      candidateName:null, email:null,
+      clientName:proj.client||null, programTitle:proj.title||null,
+      tcvManaged:proj.tcv||null, startDate:null, endDate:null,
+      primaryRole:proj.role||null, fteTotal:null,
+      market:"India", serviceLine:null, practice:null,
+      isComplex:"Yes", owningServiceLine:null, ippfContractIds:null,
+      scopeAndResponsibilities:null, complexityFactors:[], leadershipBehaviors:{},
+      projectOutcomes:null, financialBaseline:null,
+    },
+    field_confidence:{},
+    draft_quality_score:20,
+    draft_quality_note:"No API key — running in preview mode. Add Agentic Studio API key in Configure to enable AI analysis.",
+    questions:[
+      {
+        field_id:"basics",
+        maps_to:["candidateName","email","serviceLine","primaryRole"],
+        section:"candidate_info", priority:"critical",
+        question:"Your name, IBM email, service line, and role on this project?",
+        hint:"Short answer: e.g.  Priya Sharma | priya@ibm.com | HCD | Program Manager",
+        input_type:"text",
+        placeholder:"Name | email | Service Line | Role"
+      },
+      {
+        field_id:"financials",
+        maps_to:["tcvTotal","tcvManaged","revenueActual","gpPercent"],
+        section:"financial", priority:"critical",
+        question:`What are the key financial numbers for ${proj.title||"this project"}?`,
+        hint:"Rough numbers are fine: TCV, your managed portion, GP%. E.g. TCV $5M, managed $3M, GP ~25%",
+        input_type:"textarea",
+        placeholder:"TCV $5M | Managed $3M | GP 25% | Delivered within price case"
+      },
+      {
+        field_id:"scope_and_team",
+        maps_to:["scopeAndResponsibilities","fteTotal","fteOnshore","fteOffshore"],
+        section:"candidate_scope", priority:"critical",
+        question:"What were you personally responsible for, and how big was your team?",
+        hint:"What did YOU own end-to-end? Include team size and onshore/offshore split.",
+        input_type:"textarea",
+        placeholder:"Led delivery of 5 journeys. Team: 45 FTEs (12 onshore, 33 offshore)..."
+      },
+      {
+        field_id:"outcomes",
+        maps_to:["projectOutcomes","otherOutcomes"],
+        section:"outcomes", priority:"critical",
+        question:"What were the key results? Any milestones hit, CSAT, savings, go-live?",
+        hint:"Numbers or milestones. E.g. 2 journeys to UAT, CSAT 9/10, no major escalations.",
+        input_type:"textarea",
+        placeholder:"2 journeys to UAT. Improved sprint velocity. Client confidence restored..."
+      },
+      {
+        field_id:"leadership_star",
+        maps_to:["leadershipBehaviors","complexityFactors"],
+        section:"leadership", priority:"important",
+        question:"One or two situations where you had to lead through complexity or difficulty?",
+        hint:"Quick STAR: what happened, what you did, what changed. Agent will map to CPM behaviors.",
+        input_type:"textarea",
+        placeholder:"Program was in red. I introduced sprint governance and backlog discipline. Result: 2 journeys reached UAT..."
+      }
+    ]
+  };
+}
+function mockComplete(ff, answers) {
+  const m = { ...ff };
+
+  // Basics
+  if (answers.candidateName) m.candidateName = answers.candidateName;
+  if (answers.email)         m.email         = answers.email;
+  if (answers.serviceLine)   m.serviceLine   = answers.serviceLine;
+  if (answers.practice)      m.practice      = answers.practice;
+  if (answers.tcvTotal)      m.tcvTotal      = answers.tcvTotal;
+  if (answers.tcvManaged)    m.tcvManaged    = answers.tcvManaged;
+  if (answers.startDate)     m.startDate     = answers.startDate;
+  if (answers.endDate)       m.endDate       = answers.endDate;
+
+  // FTE parsing
+  if (answers.fteRaw) {
+    const tot=answers.fteRaw.match(/^(\d+)/), on=answers.fteRaw.match(/(\d+)\s*onshore/i);
+    const off=answers.fteRaw.match(/(\d+)\s*offshore/i), con=answers.fteRaw.match(/(\d+)\s*contract/i);
+    if (tot) m.fteTotal=tot[1]; if (on) m.fteOnshore=on[1];
+    if (off) m.fteOffshore=off[1]; if (con) m.fteContract=con[1];
+  }
+
+  // Scope — combine micro-prompts
+  const scopeParts = [answers.program_goal, answers.candidate_scope||ff.scopeAndResponsibilities, answers.candidate_challenge].filter(Boolean);
+  if (scopeParts.length) m.scopeAndResponsibilities = scopeParts.join("\n\n");
+
+  // Financial parsing
+  const fin = answers.financial_summary || "";
+  if (fin) {
+    m.financialBaseline = fin;
+    const rev=fin.match(/revenue[\s]*\$?([\d.]+)/i), cst=fin.match(/cost[\s]*\$?([\d.]+)/i);
+    const gp=fin.match(/\bgp[\s]*\$?([\d.]+)m/i), gpp=fin.match(/gp%?[\s]*([\d.]+)%/i);
+    if (rev) m.revenueActual=`$${rev[1]}M`; if (cst) m.costActual=`$${cst[1]}M`;
+    if (gp)  m.gpActual=`$${gp[1]}M`;       if (gpp) m.gpPercent=`${gpp[1]}%`;
+  }
+  m.varianceReason = answers.financial_variance || m.varianceReason || "Delivered within or close to approved price case.";
+  m.financialManagementSystem = answers.financial_system || "IBM IPPF";
+
+  // Outcomes
+  const outcParts=[answers.outcome_milestones,answers.outcome_csat,answers.outcome_value].filter(Boolean);
+  if (outcParts.length) m.projectOutcomes = outcParts.join(". ");
+  if (answers.outcome_recognition) m.otherOutcomes = answers.outcome_recognition;
+
+  // Complexity from structured matrix
+  if (answers.complexityFactors && answers.complexityFactors.length) {
+    m.complexityFactors = answers.complexityFactors.filter(c=>c.elaboration||c.actions);
+  }
+
+  // Leadership — map 3 STAR examples to 9 behaviours
+  const s1=answers.leadership_star1||"", s2=answers.leadership_star2||"", s3=answers.leadership_star3||"";
+  if (s1||s2) {
+    m.leadershipBehaviors = {
+      customerRelationships: s1||"Built and maintained trusted client relationships through transparent communication and regular steering reviews.",
+      embracingChange: s2.includes("change")||s2.includes("adapt")?s2:"Adapted delivery approach to evolving client requirements, maintaining team focus and momentum.",
+      negotiation: s2.includes("scope")||s2.includes("contract")||s2.includes("negotiat")?s2:"Led scope and change request discussions, protecting IBM commitments while accommodating justified client changes.",
+      communicationSkills: `Established clear cadence — weekly status, sprint ceremonies and monthly steering. ${s1.split(".")[0]||"Maintained transparency with all stakeholders."}`,
+      problemSolving: s2||"Applied root-cause analysis to resolve critical delivery risks and dependency bottlenecks.",
+      collaboration: "Coordinated across IBM delivery squads, client IT and business teams for integrated program outcomes.",
+      mentoring: s3||"Mentored junior PMs and squad leads in agile delivery, client engagement and financial management.",
+      delegation: `Delegated workstream ownership to squad leads across ${m.fteTotal||"the"} FTE team, maintaining clear accountability while empowering team decisions.`,
+      leadership: `Set clear delivery vision, removed blockers and sustained team engagement. ${s1?s1.split(".")[0]+".":""}`.trim(),
+    };
+  }
+
+  // Phases
+  if (!m.phases||!m.phases.length) {
+    m.phases = [{
+      name:"Full Program Delivery", duration:calcDuration(m.startDate,m.endDate),
+      fromDate:m.startDate||"—", toDate:m.endDate||"—",
+      description:(m.scopeAndResponsibilities||"").slice(0,200),
+      hasE2EResponsibility:"Yes", exactResponsibilities:m.scopeAndResponsibilities||"—",
+      scopeDescription:m.scopeAndResponsibilities||"—",
+      deliveryModel:"Hybrid onshore-offshore agile delivery.", solution:m.solutionTechnology||"—",
+      technology:m.solutionTechnology||"—",
+      commercialContractDetails:m.commercialConstruct||"Milestone-based delivery with change control.",
+      genAIExperience:m.genAIExperience||"—",
+    }];
+  }
+
+  return {
+    mode:"complete", filled_fields:m, draft_quality_score:72,
+    draft_quality_note:"Good draft from your notes. Add Agentic Studio API key for AI-enhanced content.",
+    warnings:["Offline mode — Agentic Studio API key needed for full AI-quality content."],
+  };
+}
+
+function calcDuration(startDate, endDate) {
+  try {
+    const s=new Date(startDate.split("/").reverse().join("-"));
+    const e=new Date(endDate.split("/").reverse().join("-"));
+    const months=Math.round((e-s)/(1000*60*60*24*30));
+    return isNaN(months)?"—":`${months} months`;
+  } catch { return "—"; }
+}
+
+// ── Proceed to Review ─────────────────────────────────────────────────────────
+function proceedToReview() { renderReview(S.finalData||{filled_fields:{}}); }
+
+document.getElementById("nav7").onclick = () => renderReview(S.finalData||{filled_fields:{}});
+document.getElementById("nav8").onclick = () => { unlock(8); goTo(9); };
+
+// delay is declared at top of script block as a hoisted function — see below
+</script>
+</body>
+</html>
