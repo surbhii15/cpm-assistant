@@ -24,6 +24,7 @@ jobs:
       - name: Build macOS (unsigned)
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: false
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: npm run build:mac
 
       - name: Upload macOS artifact
