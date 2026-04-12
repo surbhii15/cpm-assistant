@@ -1,7 +1,9 @@
 name: Build Mac App
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main        # ← runs on every push to main
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
