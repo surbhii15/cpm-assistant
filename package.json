@@ -39,7 +39,7 @@
     "to": "templates"
      }
    ],
-    "mac": {  "target": "dmg",  "identity": "Developer ID Application: Surbhi Chauhan"},
+    "mac": {  "target": "dmg",  "identity": "null"},
     "win": { "target": "nsis" },
     "linux": { "target": "AppImage" }
   },
