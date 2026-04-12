@@ -6,6 +6,8 @@
   "scripts": {
     "start": "electron .",
     "build": "electron-builder",
+    "build:mac": "electron-builder --mac --x64 --arm64",
+    "build:win": "electron-builder --win",
     "test": "node testFileProcessing.js"
   },
   "dependencies": {
@@ -19,7 +21,7 @@
   },
   "devDependencies": {
     "electron": "^28.0.0",
-    "electron-builder": "^24.0.0"
+    "electron-builder": "^25.0.0"
   },
 
   "build": {
@@ -39,7 +41,7 @@
     "to": "templates"
      }
    ],
-    "mac": {  "target": "dmg",  "identity": "null"},
+    "mac": {  "identity": null,"target": [{ "target": "dmg", "arch": ["x64", "arm64"] }]},
     "win": { "target": "nsis" },
     "linux": { "target": "AppImage" }
   },
