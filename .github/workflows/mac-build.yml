@@ -1,9 +1,10 @@
 name: Build Mac App
 
 on:
+  workflow_dispatch:    # ← adds a "Run workflow" button in Actions tab
   push:
     branches:
-      - main        # ← runs on every push to main
+      - main
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
