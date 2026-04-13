@@ -36,8 +36,8 @@
     ],
       "extraResources": [
     {
-    "from": "templates",
-    "to": "templates","filter": ["**/*.docx"]
+    "from": "templates/",
+    "to": "templates"
      }
    ],
     "mac": {  "identity": null,"target": [{ "target": "dmg", "arch": ["x64", "arm64"] }]},
