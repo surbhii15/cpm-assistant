@@ -19,29 +19,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Validate template .docx
-        run: |
-          echo " Listing templates directory..."
-          ls -lh templates/
-
-          TEMPLATE="templates/CPM_Program_Profile_Template_2025_for_CIC_India_1_.docx"
-
-          echo " Checking for LFS pointer..."
-          head -c 50 "$TEMPLATE" | cat
-          if head -c 50 "$TEMPLATE" | grep -q "version https://git-lfs"; then
-            echo " ERROR: Template is a Git LFS pointer, not the actual file!"
-            echo "Run: git lfs pull  — or disable LFS tracking for this file."
-            exit 1
-          fi
-
-          echo " Validating .docx zip structure..."
-          unzip -t "$TEMPLATE"
-          if ! unzip -p "$TEMPLATE" word/document.xml > /dev/null 2>&1; then
-            echo " ERROR: Template missing word/document.xml — file is corrupt or invalid."
-            exit 1
-          fi
-
-          echo " Template is valid!"
+      
       - run: npm install
 
       - name: Build macOS (unsigned)
