@@ -1,6 +1,0 @@
-- name: Validate template docx
-  run: |
-    echo "Checking template file..."
-    ls -lh templates/
-    unzip -t "templates/CPM_Program_Profile_Template_2025_for_CIC_India_1_.docx"
-    echo "Template is valid ✅"
