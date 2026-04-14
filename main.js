@@ -166,21 +166,12 @@ ipcMain.handle("agent-complete", async (event, { filledFields, answers, apiKey }
 ipcMain.handle("generate-document", async (event, { fieldData }) => {
   log("info", `Generating DOCX — ${fieldData.candidateName || "unknown"}`);
   try {
-    const templatePath = () => {
-  if (app.isPackaged) {
-    return path.join(
-      process.resourcesPath,
-      "templates",
-      "CPM_Program_Profile_Template_2025_for_CIC_India_1_.docx"
-    );
-  } else {
-    return path.join(
-      __dirname,
-      "templates",
-      "CPM_Program_Profile_Template_2025_for_CIC_India_1_.docx"
-    );
-  }
-};
+        const templatePath = app.isPackaged
+      ? path.join(process.resourcesPath, "templates", "CPM_Program_Profile_Template_2025_for_CIC_India_1_.docx")
+      : path.join(__dirname, "templates", "CPM_Program_Profile_Template_2025_for_CIC_India_1_.docx");
+        if (!fs.existsSync(templatePath)) {
+          return { success: false, error: `Template not found at:\n${templatePath}\n\nPlace the .docx in the templates/ folder.` };
+        }
     const name  = (fieldData.candidateName || "Candidate").replace(/\s+/g, "_");
     const today = new Date().toISOString().slice(0, 10);
     const save  = await dialog.showSaveDialog(mainWindow, {
