@@ -107,7 +107,9 @@ const fs     = require("fs");
 const AdmZip = require("adm-zip");
 
 async function fillTemplate(data, templatePath, outputPath) {
-  const zip      = new AdmZip(templatePath);
+  // Pass a buffer rather than a path so adm-zip never tries to open the file
+  // itself — important when the path is inside an Electron .asar archive.
+  const zip      = new AdmZip(fs.readFileSync(templatePath));
   const docEntry = zip.getEntry("word/document.xml");
   if (!docEntry) throw new Error("Template missing word/document.xml");
   let xml = docEntry.getData().toString("utf8");
