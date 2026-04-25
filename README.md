@@ -134,6 +134,3 @@ templateFiller.js  →  replaces <complete> markers in real IBM .docx template
 User saves filled .docx to their chosen location
 ```
 
-sk-RoRwFdmDzN5eT1WnmrszNtKlSNqXFvtl9Bue3jW0GdE
-
-agent - ak_IiECRNbMBbmlnd_tC47kZjIJlmwzVw_lcLUVF67Mz04

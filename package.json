@@ -6,9 +6,18 @@
   "scripts": {
     "start": "electron .",
     "build": "electron-builder",
+    "clean": "rm -rf dist",
+    "prebuild": "rm -rf dist",
     "build:mac": "electron-builder --mac --x64 --arm64",
     "build:win": "electron-builder --win",
-    "test": "node testFileProcessing.js"
+    "test": "jest --testPathPatterns=tests/ --forceExit",
+    "test:watch": "jest --testPathPatterns=tests/ --watch",
+    "test:coverage": "jest --testPathPatterns=tests/ --coverage --forceExit"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testTimeout": 30000,
+    "coveragePathIgnorePatterns": ["/node_modules/", "/dist/"]
   },
   "dependencies": {
     "adm-zip": "^0.5.10",
@@ -21,30 +30,54 @@
   },
   "devDependencies": {
     "electron": "^28.0.0",
-    "electron-builder": "^25.0.0"
+    "electron-builder": "^25.0.0",
+    "jest": "^30.3.0",
+    "rimraf": "^6.1.3"
   },
-
   "build": {
     "appId": "com.ibm.cpm-assistant",
     "productName": "CPM Assistant",
-    "directories": { "output": "dist" },
+    "directories": {
+      "output": "dist"
+    },
     "files": [
       "main.js",
       "preload.js",
       "renderer/**",
-      "services/**"
+      "services/**",
+      "templates/**"
     ],
-      "extraResources": [
-    {
-    "from": "templates",
-    "to": "templates","filter": ["**/*.docx"]
-     }
-   ],
-    "mac": {  "identity": null,"target": [{ "target": "dmg", "arch": ["x64", "arm64"] }]},
-    "win": { "target": "nsis" },
-    "linux": { "target": "AppImage" }
+    "extraResources": [
+      {
+        "from": "templates",
+        "to": "templates"
+      }
+    ],
+    "mac": {
+      "identity": null,
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ]
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
   },
-  "keywords": ["ibm", "cpm", "program-manager", "electron"],
+  "keywords": [
+    "ibm",
+    "cpm",
+    "program-manager",
+    "electron"
+  ],
   "author": "IBM Consulting",
   "license": "ISC"
 }

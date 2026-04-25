@@ -6,11 +6,32 @@ const path = require("path");
  * @param {Array<{name:string, path:string}>} files
  * @returns {{ extractedText:string, filesSummary:Array }}
  */
+const MAX_FILE_MB = 30;
+
 async function processFiles(files) {
   const results = [];
 
   for (const file of files) {
     const ext = path.extname(file.name).toLowerCase();
+
+    // Skip Office temp/lock files (e.g. ~$filename.pptx) — they are binary
+    // lock files, not real documents, and will crash any parser.
+    if (path.basename(file.name).startsWith("~$")) {
+      results.push({ fileName:file.name, ext, status:"error",
+        error:"Skipped — this is a temporary Office lock file (~$). Close the original file in Office and try again.",
+        chunks:[], chunkCount:0 });
+      continue;
+    }
+
+    // Warn and skip files that are too large to process reliably.
+    const sizeMB = (fs.statSync(file.path).size / 1048576);
+    if (sizeMB > MAX_FILE_MB) {
+      results.push({ fileName:file.name, ext, status:"error",
+        error:`Skipped — file is ${sizeMB.toFixed(0)} MB (limit ${MAX_FILE_MB} MB). Compress images in the file and try again.`,
+        chunks:[], chunkCount:0 });
+      continue;
+    }
+
     try {
       let text = "";
       switch (ext) {
@@ -27,17 +48,36 @@ async function processFiles(files) {
       }
       const cleaned = cleanText(text);
       const chunks  = chunkText(cleaned, file.name);
-      results.push({ fileName:file.name, ext, status:"ok", chunks, chunkCount:chunks.length, preview:cleaned.slice(0,500) });
+      // Warn when a PDF returns near-empty text — almost always a scanned/image PDF
+      const warn = (ext === ".pdf" || ext === ".docx") && cleaned.length < 100 && cleaned.length > 0;
+      results.push({
+        fileName:file.name, ext, status: warn ? "warn" : "ok",
+        warning: warn ? "Very little text extracted — this may be a scanned or image-based file." : undefined,
+        chunks, chunkCount:chunks.length, cleanedText:cleaned, preview:cleaned.slice(0,500)
+      });
     } catch (err) {
-      results.push({ fileName:file.name, ext, status:"error", error:err.message, chunks:[], chunkCount:0 });
+      results.push({ fileName:file.name, ext, status:"error", error:err?.message || String(err), chunks:[], chunkCount:0 });
     }
   }
 
   const ranked       = rankChunks(results.flatMap(r => r.chunks || []));
   const extractedText = ranked.slice(0, 80).map(c => `--- [${c.source}] ---\n${c.text}`).join("\n\n");
 
+  // Build labeled text: full cleaned content per document, clearly separated.
+  // Used by detect-projects so the agent can identify which projects appear
+  // in which documents and rank cross-document matches highest.
+  const SEP = "=".repeat(60);
+  const labeledText = results
+    .filter(r => r.status === "ok" && r.cleanedText)
+    .map(r => `${SEP}\n[DOCUMENT: ${r.fileName}]\n${SEP}\n${r.cleanedText}`)
+    .join("\n\n");
+
+  const docNames = results.filter(r => r.status === "ok").map(r => r.fileName);
+
   return {
     extractedText,
+    labeledText,
+    docNames,
     filesSummary: results.map(r => ({
       fileName:   r.fileName,
       status:     r.status,
@@ -50,8 +90,15 @@ async function processFiles(files) {
 
 async function extractPDF(filePath) {
   const pdfParse = require("pdf-parse");
-  const data = await pdfParse(fs.readFileSync(filePath));
-  return data.text;
+  // Suppress noisy TrueType font warnings from pdfjs-dist internals
+  const _warn = console.warn;
+  console.warn = () => {};
+  try {
+    const data = await pdfParse(fs.readFileSync(filePath));
+    return data.text;
+  } finally {
+    console.warn = _warn;
+  }
 }
 
 async function extractDOCX(filePath) {
@@ -86,6 +133,7 @@ async function extractXLSX(filePath) {
 }
 
 function cleanText(text) {
+  if (!text || typeof text !== "string") return "";
   return text.replace(/\r\n/g,"\n").replace(/\r/g,"\n").replace(/\t/g," ")
              .replace(/[^\S\n]+/g," ").replace(/\n{3,}/g,"\n\n").trim();
 }

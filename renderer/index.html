@@ -338,7 +338,7 @@ body {
   background: var(--cds-layer-hover-01);
   border-color: var(--cds-interactive);
 }
-.upload-tile input[type="file"] { position:absolute; inset:0; opacity:0; cursor:pointer; }
+.upload-tile input[type="file"] { display:none; }
 .upload-icon {
   width: 48px; height: 48px; margin: 0 auto var(--s4);
   background: var(--cds-tag-blue-bg);
@@ -361,6 +361,8 @@ body {
   border-bottom: 1px solid var(--cds-border-subtle-01);
 }
 .file-row:first-child { border-top: 1px solid var(--cds-border-subtle-01); }
+.file-row.file-warn { background: #fff8e1; }
+.file-warn-msg { font-size: 11px; color: #b45309; flex: 1; }
 .file-ext-tag {
   font-size: 10px; font-weight: 600; padding: 2px 6px;
   letter-spacing: 0.32px; text-transform: uppercase;
@@ -441,6 +443,23 @@ body {
 }
 .ica-notice.show { display: flex; }
 
+/* ── Auto-fill status banner ────────────────────────────────────────────────── */
+#autofillStatusBanner {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 16px; margin-bottom: var(--s4);
+  background: #0f62fe; border: none;
+  font-size: 13px; font-weight: 500; color: #ffffff;
+  transition: opacity 0.5s ease;
+}
+#autofillStatusBanner.fade-out { opacity: 0; pointer-events: none; }
+@keyframes af-spin { to { transform: rotate(360deg); } }
+.af-spinner {
+  width: 14px; height: 14px; flex-shrink: 0;
+  border: 2px solid rgba(255,255,255,0.35);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: af-spin 0.7s linear infinite;
+}
 /* ── Carbon Notifications ───────────────────────────────────────────────────── */
 .cds-notification {
   padding: var(--s4); margin-bottom: var(--s4);
@@ -543,6 +562,11 @@ body {
 .suit-fill.medium { background: var(--cds-support-warning); width: 60%; }
 .suit-fill.low    { background: var(--cds-support-error);   width: 25%; }
 .suit-reason { font-size: 12px; color: var(--cds-text-secondary); margin-top: 4px; }
+.doc-coverage { display:flex; align-items:center; gap:8px; margin:6px 0 4px; flex-wrap:wrap; }
+.doc-badge { font-size:11px; font-weight:600; padding:2px 8px; border-radius:12px; }
+.doc-badge-multi { background:#d0e2ff; color:#0043ce; }
+.doc-badge-single { background:#e0e0e0; color:#525252; }
+.doc-names { font-size:11px; color:var(--cds-text-secondary); font-style:italic; }
 
 .rec-badge {
   position: absolute; top: var(--s3); right: var(--s4);
@@ -883,9 +907,11 @@ body {
       <span class="conn-dot"></span>
       <span id="connText">Agentic Studio — No API Key</span>
     </div>
-    <button class="header-btn" onclick="openConfig()">⚙ Configure</button>
   </div>
 </header>
+
+<!-- Update notification banner (hidden until an update is detected) -->
+<div id="updateBanner" style="display:none;align-items:center;gap:12px;padding:8px 20px;background:#0043ce;color:#fff;font-size:13px;position:sticky;top:0;z-index:999"></div>
 
 <div class="app">
 
@@ -942,7 +968,6 @@ body {
   </div>
 
   <div class="side-nav-footer">
-    <button onclick="openConfig()">⚙ Configure Agentic Studio</button>
     <div style="font-size:10px;color:var(--cds-text-placeholder);padding:0 var(--s4) var(--s3);letter-spacing:.32px;display:flex;align-items:center;gap:5px">
       <span class="ica-hex" style="width:10px;height:10px;flex-shrink:0"></span>
       IBM Consulting Advantage
@@ -960,6 +985,7 @@ body {
       <div class="page-sub">Add your CV, project reports, case studies and presentations. The AI will scan all documents, identify every eligible project, and let you choose which to build your CPM profile around.</div>
     </div>
     <div class="page-body">
+      <div id="restoredSessionBanner" style="display:none;align-items:flex-start;gap:10px;padding:12px 16px;background:var(--cds-support-success-bg);border-left:3px solid var(--cds-support-success);margin-bottom:var(--s4);font-size:13px;"></div>
       <div class="upload-tile" id="uploadTile">
         <input type="file" id="fileInput" multiple accept=".pdf,.docx,.doc,.pptx,.ppt,.xlsx,.xls,.csv,.txt">
         <div class="upload-icon">📁</div>
@@ -1161,7 +1187,7 @@ body {
       <div class="page-sub">Your CPM profile document is being generated from the IBM template.</div>
     </div>
     <div class="page-body">
-      <div id="exportResult" class="mt4"></div>
+<div id="exportResult" class="mt4"></div>
       <div class="btn-set" style="margin-top:var(--s5)">
         <button class="cds-btn cds-btn-ghost" onclick="goTo(8)">← Back to Review</button>
         <button class="cds-btn cds-btn-ghost" onclick="startPackage2()">
@@ -1175,36 +1201,6 @@ body {
 </div>
 
 <!-- Config Modal -->
-<div class="modal-overlay" id="configModal">
-  <div class="cds-modal">
-    <div class="modal-header" style="display:flex;align-items:center;gap:12px">
-      <span class="ica-hex" style="width:22px;height:22px;flex-shrink:0"></span>
-      <div>
-        <div class="modal-title" style="font-size:16px;font-weight:600;margin-bottom:2px">API Configuration</div>
-        <div style="font-size:11px;color:var(--cds-text-secondary);letter-spacing:.32px">IBM Consulting Advantage · Agentic Studio</div>
-      </div>
-    </div>
-    <div class="modal-body">
-      <div class="cds-notification cds-notification-info" style="margin-bottom:var(--s5)">
-        <span class="notif-icon">ℹ</span>
-        <div class="notif-body">
-          Enter your <strong>IBM Consulting Advantage Agentic Studio</strong> API key to enable AI analysis.<br>
-          Generate one from <strong>IBM Consulting Advantage → Settings → API Keys</strong>.<br>
-          <span style="font-size:11px;color:var(--cds-text-secondary);margin-top:4px;display:block">Stored locally on your machine. Sent only to the IBM Consulting Advantage Agentic Studio endpoint.</span>
-        </div>
-      </div>
-      <div class="cds-form-item">
-        <label class="cds-label">Agentic Studio API Key <span class="req">*</span></label>
-        <input class="cds-input" id="cfg_key" type="password" placeholder="Paste your Agentic Studio API key here">
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="cds-btn cds-btn-ghost" onclick="closeConfig()">Cancel</button>
-      <button class="cds-btn cds-btn-primary" onclick="saveConfig()">Save &amp; Connect</button>
-    </div>
-  </div>
-</div>
-
 <script>
 // ── Utility — hoisted functions ───────────────────────────────────────────────
 function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
@@ -1229,16 +1225,174 @@ function safeArr(val) {
 
 // ── State ─────────────────────────────────────────────────────────────────────
 const S = {
-  files: [], extractedText: "",
+  files: [], extractedText: "", labeledText: "", docNames: [],
   detectedProjects: [], selectedProject: null,
   eligibilityResult: null, agentAnalysis: null, finalData: null,
   package2Mode: false,
-  apiKey: localStorage.getItem("cpm_key") || "",
+  apiKey: localStorage.getItem("cpm_key") || "sk-RoRwFdmDzN5eT1WnmrszNtKlSNqXFvtl9Bue3jW0GdE",
 };
+
+// ── Session persistence ────────────────────────────────────────────────────────
+const SESSION_KEY      = "cpm_session_v1";
+const SESSION_TEXT_KEY = "cpm_session_text_v1";
+
+function saveSession() {
+  try {
+    const snap = {
+      docNames:          S.docNames,
+      detectedProjects:  S.detectedProjects,
+      selectedProject:   S.selectedProject,
+      eligibilityResult: S.eligibilityResult,
+      agentAnalysis:     S.agentAnalysis,
+      finalData:         S.finalData,
+      package2Mode:      S.package2Mode,
+      savedAt:           Date.now(),
+    };
+    localStorage.setItem(SESSION_KEY, JSON.stringify(snap));
+    // Store large text separately — skip silently if quota is exceeded
+    try {
+      localStorage.setItem(SESSION_TEXT_KEY, JSON.stringify({
+        extractedText: S.extractedText,
+        labeledText:   S.labeledText,
+      }));
+    } catch { /* quota exceeded — text too large to cache */ }
+  } catch(e) { console.warn("Session save failed:", e.message); }
+}
+
+function clearSession() {
+  localStorage.removeItem(SESSION_KEY);
+  localStorage.removeItem(SESSION_TEXT_KEY);
+}
+
+function restoreSession() {
+  try {
+    const raw = localStorage.getItem(SESSION_KEY);
+    if (!raw) return false;
+    const snap = JSON.parse(raw);
+    // Discard sessions older than 24 hours
+    if (!snap.savedAt || Date.now() - snap.savedAt > 86_400_000) { clearSession(); return false; }
+    // Nothing worth restoring
+    if (!snap.agentAnalysis && !snap.finalData && !(snap.detectedProjects||[]).length) { clearSession(); return false; }
+
+    // Show prompt — don't auto-restore
+    showResumePrompt(snap);
+    return true;
+  } catch(e) {
+    console.warn("Session restore failed:", e.message);
+    clearSession(); return false;
+  }
+}
+
+function showResumePrompt(snap) {
+  const step = snap.finalData ? "Review & Export"
+             : snap.agentAnalysis ? "Generate Draft"
+             : snap.selectedProject ? "Eligibility Check"
+             : "Select Program";
+  const proj = snap.selectedProject?.title || snap.detectedProjects?.[0]?.title || "";
+  const ago  = snap.savedAt ? Math.round((Date.now() - snap.savedAt) / 60000) : 0;
+  const agoStr = ago < 60 ? `${ago}m ago` : `${Math.round(ago/60)}h ago`;
+
+  const banner = document.getElementById("restoredSessionBanner");
+  if (!banner) return;
+  banner.style.display = "flex";
+  banner.style.flexDirection = "column";
+  banner.style.gap = "10px";
+  banner.innerHTML = `
+    <div style="display:flex;align-items:flex-start;gap:10px">
+      <span style="color:#0e6027;font-size:16px">⟳</span>
+      <div>
+        <strong>Unsaved session found</strong> (${agoStr}) — last step: <strong>${step}</strong>${proj ? ` · ${proj}` : ""}<br>
+        <span style="font-size:12px;color:#525252">Files: ${(snap.docNames||[]).join(", ") || "unknown"}</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="cds-btn cds-btn-primary" style="padding:8px 16px;font-size:13px" onclick="applyRestoredSession()">Resume session →</button>
+      <button class="cds-btn cds-btn-secondary" style="padding:8px 16px;font-size:13px;background:#393939;color:#fff" onclick="discardSession()">Start fresh</button>
+    </div>`;
+  // Stash snap for later
+  window._pendingSnap = snap;
+}
+
+function applyRestoredSession() {
+  const snap = window._pendingSnap;
+  if (!snap) return;
+  document.getElementById("restoredSessionBanner").style.display = "none";
+
+  S.docNames          = snap.docNames          || [];
+  S.detectedProjects  = snap.detectedProjects  || [];
+  S.selectedProject   = snap.selectedProject   || null;
+  S.eligibilityResult = snap.eligibilityResult || null;
+  S.agentAnalysis     = snap.agentAnalysis     || null;
+  S.finalData         = snap.finalData         || null;
+  S.package2Mode      = snap.package2Mode      || false;
+  try {
+    const txt = JSON.parse(localStorage.getItem(SESSION_TEXT_KEY) || "{}");
+    S.extractedText = txt.extractedText || "";
+    S.labeledText   = txt.labeledText   || "";
+  } catch {}
+
+  if (S.finalData) {
+    markDone(1); markDone(2); markDone(3); markDone(4); markDone(5); markDone(6); markDone(7);
+    renderReview(S.finalData);
+  } else if (S.agentAnalysis) {
+    markDone(1); markDone(2); markDone(3); markDone(4);
+    renderGapForm(S.agentAnalysis);
+  } else if (S.selectedProject && S.eligibilityResult) {
+    markDone(1); markDone(2);
+    runEligibility();
+  } else if (S.detectedProjects.length > 0) {
+    markDone(1);
+    renderProjectSelection({ projects: S.detectedProjects,
+      recommendation: S.detectedProjects.find(p=>p.suitability==="high")?.id || "",
+      recommendation_reason: "" });
+  }
+  addLog("info", `Session resumed — step: ${getRestoredStepName()}`);
+}
+
+function discardSession() {
+  clearSession();
+  window._pendingSnap = null;
+  document.getElementById("restoredSessionBanner").style.display = "none";
+  addLog("info", "Previous session discarded — starting fresh");
+}
+
+function getRestoredStepName() {
+  if (S.finalData)               return "Review & Export";
+  if (S.agentAnalysis)           return "Generate Draft (gap form)";
+  if (S.eligibilityResult)       return "Eligibility Check";
+  if (S.detectedProjects.length) return "Select Program";
+  return "Upload";
+}
+
+function showRestoredFileBanner() {
+  const banner = document.getElementById("restoredSessionBanner");
+  if (banner) {
+    banner.style.display = "flex";
+    banner.innerHTML = `
+      <span style="color:#0e6027">✓</span>
+      <div>Previous session found. Documents processed: <strong>${S.docNames.join(", ")}</strong>.
+      Re-upload the same files to continue, or upload new ones to start fresh.</div>`;
+  }
+}
 
 // ── Backend log ───────────────────────────────────────────────────────────────
 if (window.cpmAPI?.onBackendLog) {
   window.cpmAPI.onBackendLog(({ level, msg, ts }) => addLog(level, `${ts} ${msg}`));
+}
+
+// ── Update available banner ───────────────────────────────────────────────────
+if (window.cpmAPI?.onUpdateAvailable) {
+  window.cpmAPI.onUpdateAvailable(({ url }) => {
+    const banner = document.getElementById("updateBanner");
+    if (!banner) return;
+    banner.innerHTML = `
+      <span>📦 Always use the latest version of CPM Assistant — download from IBM Box.</span>
+      <button class="cds-btn cds-btn-primary" style="padding:2px 14px;font-size:12px;height:28px"
+        onclick="window.cpmAPI.openReleasePage('${url}')">Get Latest</button>
+      <button class="cds-btn cds-btn-ghost" style="padding:2px 10px;font-size:12px;height:28px;color:#fff"
+        onclick="document.getElementById('updateBanner').style.display='none'">✕</button>`;
+    banner.style.display = "flex";
+  });
 }
 function addLog(level, text) {
   const s = document.getElementById("logScroll");
@@ -1258,6 +1412,8 @@ function updateConn() {
     S.apiKey ? "Agentic Studio — Connected" : "Agentic Studio — No API Key");
 }
 updateConn();
+// Restore any previously saved session (runs after DOM is ready)
+document.addEventListener("DOMContentLoaded", () => restoreSession(), { once: true });
 
 // ── Navigation ────────────────────────────────────────────────────────────────
 function goTo(n) {
@@ -1277,26 +1433,53 @@ function markDone(n) {
 // ── File upload ───────────────────────────────────────────────────────────────
 const fileInput  = document.getElementById("fileInput");
 const uploadTile = document.getElementById("uploadTile");
-fileInput.addEventListener("change", () => addFiles([...fileInput.files]));
+
+// Click → open native Electron file dialog
+uploadTile.addEventListener("click", async () => {
+  const files = await window.cpmAPI.showOpenDialog();
+  if (files && files.length) addFiles(files);
+});
+
+// Keep HTML file input change as fallback (drag-and-drop or direct input click)
+fileInput.addEventListener("change", () => addFiles(
+  [...fileInput.files].map(f => ({ name: f.name, path: f.path, size: f.size }))
+));
 uploadTile.addEventListener("dragover",  e => { e.preventDefault(); uploadTile.classList.add("over"); });
 uploadTile.addEventListener("dragleave", () => uploadTile.classList.remove("over"));
-uploadTile.addEventListener("drop", e => { e.preventDefault(); uploadTile.classList.remove("over"); addFiles([...e.dataTransfer.files]); });
+uploadTile.addEventListener("drop", e => {
+  e.preventDefault(); uploadTile.classList.remove("over");
+  addFiles([...e.dataTransfer.files].map(f => ({ name: f.name, path: f.path, size: f.size })));
+});
 
 const EXT = { pdf:"PDF",docx:"DOCX",doc:"DOCX",pptx:"PPTX",ppt:"PPTX",xlsx:"XLSX",xls:"XLSX",csv:"CSV",txt:"TXT" };
 
-function addFiles(files) { files.forEach(f => { if (!S.files.find(x=>x.name===f.name)) S.files.push(f); }); renderFiles(); }
+function addFiles(files) {
+  files.forEach(f => {
+    if (S.files.find(x => x.name === f.name)) return; // already added
+    S.files.push(f);
+  });
+  renderFiles();
+}
 function removeFile(n)   { S.files = S.files.filter(f=>f.name!==n); renderFiles(); }
 
 function renderFiles() {
   const list = document.getElementById("fileList"); list.innerHTML = "";
   S.files.forEach(f => {
-    const ext  = f.name.split(".").pop().toLowerCase();
-    const size = f.size>1048576?`${(f.size/1048576).toFixed(1)} MB`:`${(f.size/1024).toFixed(0)} KB`;
-    const div  = document.createElement("div"); div.className = "file-row";
+    const ext     = f.name.split(".").pop().toLowerCase();
+    const sizeMB  = f.size / 1048576;
+    const sizeStr = sizeMB >= 1 ? `${sizeMB.toFixed(1)} MB` : `${(f.size/1024).toFixed(0)} KB`;
+    const isTmp   = f.name.startsWith("~$");
+    const isLarge = sizeMB > 30;
+    const warn    = isTmp  ? "⚠ Temp file — close the original in Office first"
+                  : isLarge ? `⚠ ${sizeMB.toFixed(0)} MB — may be skipped (limit 30 MB)`
+                  : null;
+    const div = document.createElement("div");
+    div.className = `file-row${warn ? " file-warn" : ""}`;
     div.innerHTML = `<span class="file-ext-tag ext-${ext}">${EXT[ext]||ext.toUpperCase()}</span>
       <span class="file-name">${f.name}</span>
-      <span class="file-size">${size}</span>
-      <button class="file-del" onclick="removeFile('${f.name}')">✕</button>`;
+      <span class="file-size">${sizeStr}</span>
+      ${warn ? `<span class="file-warn-msg">${warn}</span>` : ""}
+      <button class="file-del" onclick="removeFile('${f.name.replace(/'/g,"\\'")}')">✕</button>`;
     list.appendChild(div);
   });
   document.getElementById("uploadBtn").disabled = S.files.length === 0;
@@ -1312,10 +1495,58 @@ function addStepLog(containerId, text, type="info") {
   document.getElementById(containerId).appendChild(d);
 }
 
+// ── Langflow error banner — friendly message + retry button ───────────────────
+function renderLangflowErrorBanner(err, retryFn, backLabel, backFn) {
+  const msg = (err && err.message) ? err.message : String(err);
+  let title, detail, waitHint = false;
+
+  if (/50[234]|Bad Gateway|Service Unavailable|Gateway Timeout/i.test(msg)) {
+    title  = "IBM Agentic Studio is temporarily unavailable";
+    detail = "The service returned a gateway error (502/503/504). This is usually transient — wait a few seconds and retry.";
+  } else if (/timeout|too long|AbortError|TIMEOUT/i.test(msg)) {
+    title  = "The AI is taking too long to respond";
+    detail = "The request timed out — the service may be under load. It usually succeeds on retry.";
+  } else if (/network|VPN|ECONNREFUSED|ENOTFOUND|NETWORK|Cannot reach/i.test(msg)) {
+    title  = "Cannot reach IBM Consulting Advantage";
+    detail = "Check your network connection and VPN, then retry.";
+  } else if (/rate.?limit|429|busy right now|overload/i.test(msg)) {
+    title  = "Service is rate-limited";
+    detail = "Too many requests at once. Wait about 30 seconds, then retry.";
+    waitHint = true;
+  } else if (/empty response/i.test(msg)) {
+    title  = "The AI returned an empty response";
+    detail = "Langflow returned no content. This is usually temporary — please retry.";
+  } else {
+    title  = "Something went wrong";
+    detail = msg.length > 250 ? msg.slice(0, 250) + "…" : msg;
+  }
+
+  return `
+    <div style="margin-top:var(--s4)">
+      <div class="cds-notification cds-notification-error">
+        <span class="notif-icon">✕</span>
+        <div class="notif-body">
+          <strong>${title}</strong><br>
+          <span style="font-size:12px;opacity:.85;line-height:1.5">${detail}</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:var(--s3);margin-top:var(--s3);align-items:center;flex-wrap:wrap">
+        <button class="cds-btn cds-btn-primary" style="font-size:13px" onclick="${retryFn}">↺ Retry</button>
+        <button class="cds-btn cds-btn-ghost"   style="font-size:13px" onclick="${backFn}">${backLabel}</button>
+        ${waitHint ? `<span style="font-size:12px;opacity:.65">⏱ Wait ~30 s before retrying</span>` : ""}
+      </div>
+    </div>`;
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // STEP 1 → 2: Extract + Detect Projects
 // ─────────────────────────────────────────────────────────────────────────────
 async function startExtraction() {
+  // New upload — wipe any previously cached session so stale projects don't bleed through
+  clearSession();
+  S.detectedProjects = []; S.selectedProject = null;
+  S.eligibilityResult = null; S.agentAnalysis = null; S.finalData = null;
+
   unlock(1, false); goTo(1);
   const prog=document.getElementById("scanProg"), msg=document.getElementById("scanMsg");
   const notice=document.getElementById("icaNotice1"), icaMsg=document.getElementById("icaMsg1");
@@ -1336,7 +1567,48 @@ async function startExtraction() {
       extract = { extractedText:`[PREVIEW] ${S.files.map(f=>f.name).join(", ")}`, filesSummary:S.files.map(f=>({fileName:f.name,status:"ok",chunkCount:8})) };
     }
     S.extractedText = extract.extractedText;
+    S.labeledText   = extract.labeledText || "";
+    S.docNames      = extract.docNames    || [];
+    saveSession();
     set(`Extraction complete — ${extract.filesSummary.length} file(s)`, 45);
+
+    // ── Warn about zero-chunk / unreadable files ──────────────────────────────
+    const badFiles = (extract.filesSummary || []).filter(f => f.status === "error" || f.chunkCount === 0);
+    if (badFiles.length > 0) {
+      const names = badFiles.map(f => `<strong>${f.name || f.fileName}</strong>`).join(", ");
+      const hasError = badFiles.some(f => f.status === "error");
+      document.getElementById("scanLog").innerHTML +=
+        `<div style="margin-top:var(--s3)">
+          <div class="cds-notification cds-notification-warning">
+            <span class="notif-icon">⚠</span>
+            <div class="notif-body">
+              <span class="notif-title">${hasError ? "Could not read" : "No text found in"} ${badFiles.length > 1 ? "some files" : "a file"}</span><br>
+              ${names} ${hasError ? "failed to open" : "contained no readable text"}. This usually means the file is a <strong>scanned / image-based PDF</strong>.
+              The AI will have less data to work with — re-save as a Word (.docx) or text-based PDF for best results.
+            </div>
+          </div>
+        </div>`;
+    }
+    // ─────────────────────────────────────────────────────────────────────────
+
+    // If every uploaded file failed to produce any readable text, abort now rather
+    // than sending an empty context to the agent (which would return 0 projects).
+    if (!S.labeledText && !S.extractedText) {
+      document.getElementById("scanLog").innerHTML +=
+        `<div style="margin-top:var(--s3)">
+          <div class="cds-notification cds-notification-error">
+            <span class="notif-icon">✕</span>
+            <div class="notif-body">
+              <span class="notif-title">No readable text found in any file</span><br>
+              All uploaded files appear to be scanned images or are unreadable. The AI cannot proceed without text content.
+              Please re-save your documents as Word (.docx) or text-based PDF files and try again.
+            </div>
+          </div>
+        </div>`;
+      set("No readable text — cannot proceed", 100);
+      unlock(0, true);
+      return;
+    }
 
     // Detect projects
     notice.classList.add("show");
@@ -1347,7 +1619,7 @@ async function startExtraction() {
 
     let detect;
     if (window.cpmAPI && S.apiKey) {
-      const r = await window.cpmAPI.agentDetectProjects({ extractedText:S.extractedText, apiKey:S.apiKey });
+      const r = await window.cpmAPI.agentDetectProjects({ labeledText:S.labeledText, extractedText:S.extractedText, apiKey:S.apiKey });
       if (!r.success) throw new Error(r.error);
       detect = r.data;
     } else {
@@ -1358,6 +1630,7 @@ async function startExtraction() {
     prog.style.width="100%"; notice.classList.remove("show");
     setConn("connected","Agentic Studio — Connected");
     S.detectedProjects = detect.projects||[];
+    saveSession();
     set(`Found ${S.detectedProjects.length} project(s)`, 100);
     addStepLog("scanLog",`✅ ${S.detectedProjects.length} project(s) identified`,"success");
 
@@ -1373,7 +1646,7 @@ async function startExtraction() {
   } catch(err) {
     notice.classList.remove("show"); setConn("disconnected","Agentic Studio — Error");
     msg.textContent="Error"; addStepLog("scanLog",`❌ ${err.message}`,"error");
-    document.getElementById("scanLog").innerHTML+=`<div style="margin-top:var(--s3)"><div class="cds-notification cds-notification-error"><span class="notif-icon">✕</span><div class="notif-body">${err.message}</div></div><button class="cds-btn cds-btn-ghost" style="margin-top:var(--s3)" onclick="goTo(0)">← Try Again</button></div>`;
+    document.getElementById("scanLog").innerHTML += renderLangflowErrorBanner(err, "startExtraction()", "← Start Over", "goTo(0)");
   }
 }
 
@@ -1407,6 +1680,13 @@ function renderProjectSelection(detect) {
           ${proj.tcv?'<span class="proj-meta-item">💰 ' + proj.tcv + '</span>':""}
         </div>
         <div class="proj-summary">${proj.summary||""}</div>
+        ${(proj.found_in_docs?.length > 0) ? `
+        <div class="doc-coverage">
+          ${proj.doc_coverage > 1
+            ? `<span class="doc-badge doc-badge-multi">📄 Found in ${proj.doc_coverage} documents</span>`
+            : `<span class="doc-badge doc-badge-single">📄 Found in 1 document</span>`}
+          <span class="doc-names">${(proj.found_in_docs||[]).join(" · ")}</span>
+        </div>` : ""}
         <div class="suit-row">
           <span class="suit-label ${proj.suitability||"medium"}">${(proj.suitability||"MEDIUM").toUpperCase()}</span>
           <div class="suit-track"><div class="suit-fill ${proj.suitability||"medium"}"></div></div>
@@ -1421,6 +1701,7 @@ function renderProjectSelection(detect) {
 function selectProject(id) {
   document.querySelectorAll(".proj-card").forEach(c=>c.classList.toggle("selected", c.dataset.id===id));
   S.selectedProject = S.detectedProjects.find(p=>p.id===id)||null;
+  saveSession();
   document.getElementById("selectBtn").disabled=!S.selectedProject;
 }
 
@@ -1442,6 +1723,7 @@ async function runEligibility() {
   // Run checks client-side (fast — no agent call needed)
   const checks = runEligibilityChecks(proj);
   S.eligibilityResult = checks;
+  saveSession();
 
   const passCount = checks.filter(c=>c.status==="pass").length;
   const warnCount = checks.filter(c=>c.status==="warn").length;
@@ -1533,7 +1815,7 @@ async function runAnalyze() {
   try {
     let result;
     if (window.cpmAPI && S.apiKey) {
-      const r=await window.cpmAPI.agentAnalyze({extractedText:S.extractedText,selectedProject:S.selectedProject,apiKey:S.apiKey});
+      const r=await window.cpmAPI.agentAnalyze({extractedText:S.extractedText,labeledText:S.labeledText,selectedProject:S.selectedProject,apiKey:S.apiKey});
       if(!r.success) throw new Error(r.error);
       result=r.data;
     } else {
@@ -1545,12 +1827,44 @@ async function runAnalyze() {
     const fCount=Object.values(result.filled_fields||{}).filter(v=>v&&v!=="—"&&v!==null).length;
     addStepLog("analyzeLog",`✅ ${fCount} fields detected, ${(result.questions||[]).length} questions — quality ${result.draft_quality_score||0}%`,"success");
 
-    S.agentAnalysis=result; markDone(4);
+    // ── Zero-fields warning ─────────────────────────────────────────────────
+    if (fCount === 0) {
+      const meta  = r?._meta || {};
+      const chars = meta.textLen ?? "?";
+      const isShort = typeof meta.textLen === "number" && meta.textLen < 300;
+      addStepLog("analyzeLog", `⚠ No data could be extracted from your documents (${chars} chars read).`, "warn");
+      document.getElementById("analyzeLog").innerHTML +=
+        `<div style="margin-top:var(--s3)">
+          <div class="cds-notification cds-notification-warning">
+            <span class="notif-icon">⚠</span>
+            <div class="notif-body">
+              <span class="notif-title">No data extracted from your documents</span><br>
+              ${isShort || chars === 0
+                ? `Only <strong>${chars} characters</strong> of text were found. Your files may be <strong>scanned / image-based PDFs</strong> — these contain no machine-readable text and cannot be read by the AI.`
+                : `The AI analysed your documents but could not confidently extract any structured fields. The content may not clearly describe a delivery program (e.g. it might be a generic CV or unrelated material).`
+              }<br><br>
+              <strong>What to do:</strong>
+              <ul style="margin:4px 0 0 16px;padding:0">
+                ${isShort || chars === 0
+                  ? `<li>Re-save your CV / reports as a <strong>Word (.docx)</strong> or a text-based PDF</li>
+                     <li>Or use "Print to PDF" from Word/Google Docs to create a text-layer PDF</li>`
+                  : `<li>Check that the uploaded file is your CV or program reports, not a blank template</li>
+                     <li>Try uploading an additional file (e.g. a project status report or SOW) with more program detail</li>`
+                }
+                <li>You can continue and fill all fields manually — the AI will still write the final profile</li>
+              </ul>
+            </div>
+          </div>
+        </div>`;
+    }
+    // ────────────────────────────────────────────────────────────────────────
+
+    S.agentAnalysis=result; saveSession(); markDone(4);
     await delay(600); renderGapForm(result);
   } catch(err) {
     clearInterval(tick); setConn("disconnected","Agentic Studio — Error");
     msg.textContent="Error"; addStepLog("analyzeLog",`❌ ${err.message}`,"error");
-    document.getElementById("analyzeLog").innerHTML+=`<div style="margin-top:var(--s4)"><div class="cds-notification cds-notification-error"><span class="notif-icon">✕</span><div>${err.message}</div></div><button class="cds-btn cds-btn-ghost" style="margin-top:var(--s3)" onclick="goTo(2)">← Back</button></div>`;
+    document.getElementById("analyzeLog").innerHTML += renderLangflowErrorBanner(err, "runAnalyze()", "← Back to Project Selection", "goTo(2)");
   }
 }
 
@@ -1572,8 +1886,148 @@ const COMPLEXITY_FACTORS = [
 
 const v = id => document.getElementById(id)?.value?.trim() || "";
 
+// ── Auto-fill state ────────────────────────────────────────────────────────────
+let _autoFillTimer   = null;
+let _autoFillRunning = false;
+
+function scheduleAutoFill() {
+  if (_autoFillRunning) return;
+  clearTimeout(_autoFillTimer);
+  _autoFillTimer = setTimeout(runAutoFill, 2000);
+}
+
+async function runAutoFill() {
+  if (_autoFillRunning) return;
+
+  const currentAnswers = collectAnswers();
+  const ff = S.agentAnalysis?.filled_fields || {};
+
+  // Gather empty fields (has class cpm-gap-input or cpm-gap-textarea, no value)
+  const emptyFields = [];
+  document.querySelectorAll(".cpm-gap-input, .cpm-gap-textarea").forEach(el => {
+    if (!el.value?.trim() && !el.dataset.autofilled) {
+      emptyFields.push({ id: el.id, label: el.dataset.label || el.id });
+    }
+  });
+
+  // Need at least 2 substantive answers and at least 1 empty field
+  const filledCount = Object.values(currentAnswers)
+    .filter(v => typeof v === "string" && v.trim().length > 10).length;
+  if (filledCount < 2 || emptyFields.length === 0) return;
+
+  _autoFillRunning = true;
+  showAutoFillStatus("loading");
+  try {
+    const res = await window.cpmAPI.agentAutofill({
+      filledFields:   ff,
+      currentAnswers,
+      emptyFieldKeys: emptyFields.map(f => f.label),
+      apiKey:         S.apiKey,
+    });
+
+    if (!res?.success) throw new Error(res?.error || "autofill failed");
+    const suggested = res.data?.suggested_fields || {};
+
+    let filledCount = 0;
+    emptyFields.forEach(({ id, label }) => {
+      const suggestion = suggested[label] || suggested[id];
+      if (!suggestion) return;
+      const el = document.getElementById(id);
+      if (el && !el.value?.trim()) {
+        el.value = suggestion;
+        el.dataset.autofilled = "true";
+        markAutoFilled(el);
+        filledCount++;
+      }
+    });
+
+    showAutoFillStatus("done", filledCount);
+    updateGateCheck();
+  } catch (e) {
+    showAutoFillStatus("hidden");
+    console.warn("Auto-fill failed:", e);
+    showAutoFillError(e.message || "Auto-fill could not complete.");
+  } finally {
+    _autoFillRunning = false;
+  }
+}
+
+function showAutoFillError(msg) {
+  // Remove any previous autofill error notice
+  document.getElementById("autofillErrorNotice")?.remove();
+
+  const isRateLimit = /rate.?limit|busy|too many/i.test(msg);
+  const notice = document.createElement("div");
+  notice.id = "autofillErrorNotice";
+  notice.className = "cds-notification cds-notification-warning";
+  notice.style.cssText = "margin-bottom:var(--s4);font-size:13px;";
+  notice.innerHTML = `
+    <span class="notif-icon">⚠</span>
+    <div class="notif-body">
+      <span class="notif-title">${isRateLimit ? "AI is busy — auto-fill paused" : "Auto-fill unavailable"}</span><br>
+      ${isRateLimit
+        ? "The AI service is rate-limited right now. Fill the remaining fields manually or <button class='cds-btn cds-btn-ghost' style='padding:0 4px;font-size:12px;height:auto;vertical-align:baseline' onclick='scheduleAutoFill()'>retry in 30 s</button>."
+        : `Could not suggest values for remaining fields. ${msg.slice(0,120)}`
+      }
+    </div>
+    <button style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--cds-text-secondary);padding:0 4px" onclick="this.closest('#autofillErrorNotice').remove()">✕</button>`;
+
+  // Insert at top of the gap form
+  const form = document.getElementById("gapForm");
+  if (form) form.prepend(notice);
+}
+
+function showAutoFillStatus(state, count) {
+  const form = document.getElementById("gapForm");
+  if (!form) return;
+
+  let banner = document.getElementById("autofillStatusBanner");
+
+  if (state === "loading") {
+    if (!banner) {
+      banner = document.createElement("div");
+      banner.id = "autofillStatusBanner";
+      form.prepend(banner);
+    }
+    banner.className = "";
+    banner.innerHTML = `<div class="af-spinner"></div><span>AI is suggesting values for remaining fields…</span>`;
+
+  } else if (state === "done") {
+    if (!banner) return;
+    banner.innerHTML = count > 0
+      ? `<span style="color:var(--cds-support-success);font-size:15px">✓</span><span><strong>${count} field${count > 1 ? "s" : ""} auto-filled</strong> — review and edit as needed</span>`
+      : `<span style="color:var(--cds-text-secondary);font-size:15px">–</span><span>No additional fields could be inferred from your answers</span>`;
+    // Fade out after 3s then remove
+    setTimeout(() => {
+      banner.classList.add("fade-out");
+      setTimeout(() => banner.remove(), 500);
+    }, 3000);
+
+  } else if (state === "hidden") {
+    banner?.remove();
+  }
+}
+
+function markAutoFilled(el) {
+  el.style.borderLeft = "3px solid #0062ff";
+  const badge = document.createElement("span");
+  badge.className = "autofill-badge";
+  badge.textContent = "AI suggested · edit to override";
+  badge.style.cssText = "font-size:11px;color:#0062ff;display:block;margin-top:2px;opacity:0.75;";
+  el.addEventListener("input", () => {
+    el.style.borderLeft = "";
+    el.dataset.autofilled = "";
+    badge.remove();
+  }, { once: true });
+  el.insertAdjacentElement("afterend", badge);
+}
+// ──────────────────────────────────────────────────────────────────────────────
+
 function renderGapForm(analysis) {
   unlock(5); goTo(5);
+  // Reset auto-fill state for fresh form render
+  _autoFillRunning = false;
+  clearTimeout(_autoFillTimer);
   try {
     const ff  = analysis.filled_fields    || {};
     const fc  = analysis.field_confidence || {};
@@ -1582,9 +2036,10 @@ function renderGapForm(analysis) {
   const note  = analysis.draft_quality_note  || "";
   const fCount = Object.values(ff).filter(v=>v&&v!=="—"&&v!==null).length;
   const proj   = S.selectedProject?.title || "selected program";
+  const projDuration = S.selectedProject?.duration || "the selected duration";
 
   document.getElementById("gapSub").textContent =
-    `The AI extracted and drafted content for "${proj}". Review the summary below, then fill in what only you can provide — the AI will write the rest professionally.`;
+    `The AI extracted and drafted content for "${proj}" in ${projDuration}. Review the summary below, then fill in only what could not be derived from those documents — the AI will write the rest professionally.`;
 
   // ── AI Contribution & Effort Saving Panel ─────────────────────────────────
   //
@@ -1605,29 +2060,47 @@ function renderGapForm(analysis) {
   //
   //   Hours saved = Effort% × 3.5h baseline  → shown as ±0.5h range for honesty
 
-  const TOTAL_FIELDS    = 30;
+  const TOTAL_FIELDS       = 30;
   const CPM_HOURS_BASELINE = 3.5;
-  const EFFORT_CAP      = 70;
-  const questionsAsked  = (qs || []).length;
+  const EFFORT_CAP         = 70;
+  const questionsAsked     = (qs || []).length;
+
+  // ── Real field classification ─────────────────────────────────────────────
+  // DOC_FIELDS  = short facts the agent READS directly from documents
+  //               (names, dates, numbers, codes — no prose writing involved)
+  // All other filled fields are AI-DRAFTED narrative text the agent writes
+  //               from context (scope paragraphs, variance explanations, etc.)
+  const DOC_FIELDS = new Set([
+    "candidateName","market","serviceLine","practice","primaryRole",
+    "clientName","programTitle","overallProgramTitle","profileProjectName",
+    "owningServiceLine","ippfContractIds","isComplex",
+    "tcvTotal","tcvManaged","startDate","endDate",
+    "fteTotal","fteOnshore","fteOffshore","fteContract",
+    "managerName","managerEmail",
+    "revenueActual","costActual","gpActual","gpPercent",
+    "clientSatisfactionScore",
+  ]);
 
   let fromDocs = 0, aiDrafted = 0, manualNeeded = 0;
   Object.entries(ff).forEach(([key, val]) => {
-    if (!val || val === "—" || val === null) { manualNeeded++; return; }
-    const conf = fc[key] || 0;
-    if (conf >= 0.7) fromDocs++;
-    else             aiDrafted++;
+    const empty = !val || val === "—" || val === null ||
+                  (Array.isArray(val) && val.length === 0);
+    if (empty) { manualNeeded++; return; }
+    if (DOC_FIELDS.has(key)) fromDocs++;
+    else                     aiDrafted++;
   });
-  // Cap buckets to TOTAL_FIELDS
+
+  // Cap to TOTAL_FIELDS so percentages add up cleanly
   fromDocs     = Math.min(fromDocs,  TOTAL_FIELDS);
   aiDrafted    = Math.min(aiDrafted, Math.max(0, TOTAL_FIELDS - fromDocs));
   manualNeeded = Math.max(0, TOTAL_FIELDS - fromDocs - aiDrafted);
 
-  // Conservative weighted formula
-  const rawEffort      = ((fromDocs * 1.0) + (aiDrafted * 0.5)) / TOTAL_FIELDS * 100;
-  const effortPct      = Math.min(EFFORT_CAP, Math.round(rawEffort));
-  const fromDocsPct    = Math.round(fromDocs  / TOTAL_FIELDS * 100);
-  const aiDraftedPct   = Math.round(aiDrafted / TOTAL_FIELDS * 100);
-  const manualPct      = Math.max(0, 100 - fromDocsPct - aiDraftedPct);
+  // Effort: doc fields = full saving; AI-drafted = half saving (user still reviews)
+  const rawEffort    = (fromDocs * 1.0 + aiDrafted * 0.5) / TOTAL_FIELDS * 100;
+  const effortPct    = Math.min(EFFORT_CAP, Math.round(rawEffort));
+  const fromDocsPct  = Math.round(fromDocs  / TOTAL_FIELDS * 100);
+  const aiDraftedPct = Math.round(aiDrafted / TOTAL_FIELDS * 100);
+  const manualPct    = Math.max(0, 100 - fromDocsPct - aiDraftedPct);
 
   // Hours — show as range ±0.5h
   const hoursMid       = Math.round(effortPct / 100 * CPM_HOURS_BASELINE * 10) / 10;
@@ -1651,10 +2124,11 @@ function renderGapForm(analysis) {
 
   // Tooltip formula text
   const formulaTooltip =
-    "Effort Saved = MIN(70%, (Doc fields \xd7 1.0 + AI fields \xd7 0.5) \xf7 30)\n" +
-    "Doc fields: " + fromDocs + " extracted with high confidence from your uploads\n" +
-    "AI fields: " + aiDrafted + " inferred and drafted by AI (you review these below)\n" +
-    "Cap at 70% \u2014 because reviewing AI content is still your work\n" +
+    "Effort Saved = MIN(70%, Doc\xd71.0 + AI-drafted\xd70.5 \xf7 30 fields)\n" +
+    "From documents: " + fromDocs + " facts read directly (names, dates, numbers)\n" +
+    "AI-drafted: " + aiDrafted + " narratives written by AI from context (you review)\n" +
+    "Needs your input: " + manualNeeded + " fields not derivable from documents\n" +
+    "Cap at 70% \u2014 reviewing AI drafts is still your work\n" +
     "Time saved = " + effortPct + "% \xd7 3.5h baseline (quality CPM profile from scratch)";
 
   const noteHtml = note
@@ -1697,21 +2171,21 @@ function renderGapForm(analysis) {
       // ── Zone 2: Stacked bar + legend ─────────────────────────────────────
       '<div style="padding:var(--s4);border-bottom:1px solid var(--cds-border-subtle-01)">' +
 
-        // Bar
+        // Bar — 3-segment: from docs (green) + AI-drafted (blue) + needs input (gray)
         '<div style="display:flex;height:8px;width:100%;overflow:hidden;border-radius:0;margin-bottom:var(--s3)">' +
-          (fromDocsPct > 0  ? '<div style="width:' + fromDocsPct  + '%;background:#24a148;transition:width .6s ease"></div>' : '') +
+          (fromDocsPct  > 0 ? '<div style="width:' + fromDocsPct  + '%;background:#24a148;transition:width .6s ease"></div>' : '') +
           (aiDraftedPct > 0 ? '<div style="width:' + aiDraftedPct + '%;background:#0f62fe;transition:width .6s ease"></div>' : '') +
-          (manualPct > 0    ? '<div style="width:' + manualPct    + '%;background:var(--cds-border-subtle-02)"></div>' : '') +
+          (manualPct    > 0 ? '<div style="width:' + manualPct    + '%;background:var(--cds-border-subtle-02)"></div>' : '') +
         '</div>' +
 
-        // Legend — three items in a row
+        // Legend — three items
         '<div style="display:flex;gap:var(--s5);flex-wrap:wrap">' +
 
           '<div style="display:flex;align-items:flex-start;gap:var(--s2)">' +
             '<span style="width:10px;height:10px;background:#24a148;flex-shrink:0;margin-top:3px;display:inline-block"></span>' +
             '<div>' +
               '<div style="font-size:13px;font-weight:600;color:var(--cds-text-primary)">' + fromDocsPct + '% from your documents</div>' +
-              '<div style="font-size:11px;color:var(--cds-text-secondary)">' + fromDocs + ' fields extracted with high confidence</div>' +
+              '<div style="font-size:11px;color:var(--cds-text-secondary)">' + fromDocs + ' facts read directly — names, dates, numbers</div>' +
             '</div>' +
           '</div>' +
 
@@ -1719,7 +2193,7 @@ function renderGapForm(analysis) {
             '<span style="width:10px;height:10px;background:#0f62fe;flex-shrink:0;margin-top:3px;display:inline-block"></span>' +
             '<div>' +
               '<div style="font-size:13px;font-weight:600;color:var(--cds-text-primary)">' + aiDraftedPct + '% drafted by AI</div>' +
-              '<div style="font-size:11px;color:var(--cds-text-secondary)">' + aiDrafted + ' fields inferred &amp; written — review below</div>' +
+              '<div style="font-size:11px;color:var(--cds-text-secondary)">' + aiDrafted + ' narratives written from context — review below</div>' +
             '</div>' +
           '</div>' +
 
@@ -1751,18 +2225,16 @@ function renderGapForm(analysis) {
     ["tcvManaged","TCV Managed"],["startDate","Start"],["endDate","End"],["primaryRole","Role"],["fteTotal","FTEs"]];
   // Detected table — built with string concat to avoid nested template literals
   const tableRows = kf.map(([key,label]) => {
-    const val  = ff[key], conf = fc[key]||0;
-    const cls  = conf>=.7?"high":conf>=.4?"medium":"low";
-    const lbl  = conf>=.7?"High":conf>=.4?"Medium":"Not found";
+    const val  = ff[key];
     const disp = (val && val!=="—" && val!==null)
       ? "<strong>" + val + "</strong>"
       : '<span style="color:var(--cds-text-placeholder)">Not found</span>';
-    return "<tr><td><strong>" + label + "</strong></td><td>" + disp + "</td><td><span class=\"conf-tag " + cls + "\">" + lbl + "</span></td></tr>";
+    return "<tr><td><strong>" + label + "</strong></td><td>" + disp + "</td></tr>";
   }).join("");
   document.getElementById("detectedTable").innerHTML =
     '<div class="section-heading">Auto-detected — confirm or correct in the fields below</div>' +
     '<table class="cds-data-table" style="margin-bottom:var(--s5)">' +
-      "<thead><tr><th>Field</th><th>Detected Value</th><th>Confidence</th></tr></thead>" +
+      "<thead><tr><th>Field</th><th>Detected Value</th></tr></thead>" +
       "<tbody>" + tableRows + "</tbody>" +
     "</table>";
 
@@ -1775,7 +2247,7 @@ function renderGapForm(analysis) {
   </div>`;
 
   // Build and render micro-prompt groups
-  buildMicroGroups(ff, fc, qs).forEach((group, gi) => {
+  buildDynamicMicroGroups(ff, fc, qs).forEach((group, gi) => {
     const detectedBanner = group.detected
       ? `<div class="micro-detected">✓ AI detected: <strong style="margin-left:4px">${group.detected}</strong></div>`
       : "";
@@ -1790,8 +2262,8 @@ function renderGapForm(analysis) {
           ${p.hint?`<span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--cds-text-secondary);font-size:11px;margin-left:4px">— ${p.hint}</span>`:""}
         </div>
         ${p.type==="textarea"
-          ? `<textarea class="cds-textarea" id="mp_${group.id}_${pi}" rows="${p.rows||2}" placeholder="${ph}" oninput="updateGateCheck()">${pf}</textarea>`
-          : `<input class="cds-input" type="text" id="mp_${group.id}_${pi}" value="${pf}" placeholder="${ph}" oninput="updateGateCheck()">`
+          ? `<textarea class="cds-textarea cpm-gap-textarea" id="mp_${group.id}_${pi}" rows="${p.rows||2}" placeholder="${ph}" data-label="${p.label.replace(/"/g,"'")}" oninput="updateGateCheck();scheduleAutoFill()">${pf}</textarea>`
+          : `<input class="cds-input cpm-gap-input" type="text" id="mp_${group.id}_${pi}" value="${pf}" placeholder="${ph}" data-label="${p.label.replace(/"/g,"'")}" oninput="updateGateCheck();scheduleAutoFill()">`
         }
       </div>`;
     }).join("");
@@ -1816,19 +2288,15 @@ function renderGapForm(analysis) {
                  : (rawCF && typeof rawCF === "object") ? Object.values(rawCF)
                  : [];
 
-  // Derived: agent found these with real content
-  let derivedCF = cfArray.filter(c =>
-    c && c.factor && (safeStr(c.elaboration).length > 5 || safeStr(c.actions).length > 5)
-  );
+  // Derived: agent found these — keep all with a factor name so they appear in the UI
+  let derivedCF = cfArray.filter(c => c && c.factor);
 
-  // ── Client-side fallback: if agent returned nothing, derive from text ────────
+  // ── Client-side fallback: if agent returned nothing, derive from scoped project text ──
   if (derivedCF.length === 0) {
-    const text = (S.extractedText + " " + safeStr(ff.scopeAndResponsibilities)).toLowerCase();
-    const proj = S.selectedProject?.title || "";
-    derivedCF = clientDeriveComplexity(text, proj, ff);
-    if (derivedCF.length > 0) {
-      addLog("info", `Client-side: derived ${derivedCF.length} complexity factor(s) from document text`);
-    }
+    const projTitle = S.selectedProject?.title || ff.programTitle || "";
+    // Scope text to selected project's documents only to avoid cross-project contamination
+    const scopedText = scopeTextForProject(S.labeledText, S.selectedProject) || S.extractedText || "";
+    derivedCF = clientDeriveComplexity(scopedText, projTitle, ff);
   }
 
   // State: all complexity factors the candidate has confirmed/added
@@ -1869,101 +2337,231 @@ function renderGapForm(analysis) {
 }
 
 function buildMicroGroups(ff, fc, agentQs) {
+  return buildDynamicMicroGroups(ff, fc, agentQs);
+}
+
+function normaliseAgentQuestions(agentQs) {
+  const seen = new Set();
+  return (agentQs || [])
+    .filter(q => q && q.question)
+    .map(q => ({
+      ...q,
+      maps_to: Array.isArray(q.maps_to) ? q.maps_to : [],
+      section: q.section || inferSectionFromMaps(q.maps_to || []),
+    }))
+    .filter(q => {
+      const key = `${q.section}|${String(q.question).trim().toLowerCase()}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+}
+
+function inferSectionFromMaps(mapsTo) {
+  const joined = (mapsTo || []).join(" ").toLowerCase();
+  if (/candidate|email|service|practice|role/.test(joined)) return "candidate_info";
+  if (/tcv|revenue|cost|gp|financial/.test(joined)) return "financial";
+  if (/scope|responsibilit|fte|team/.test(joined)) return "candidate_scope";
+  if (/outcome|deliverable|satisfaction|businessvalue/.test(joined)) return "outcomes";
+  if (/leadership|mentoring|delegation|communication/.test(joined)) return "leadership";
+  return "";
+}
+
+function getSectionQuestions(agentQs, ...sections) {
+  const wanted = new Set(sections);
+  return normaliseAgentQuestions(agentQs).filter(q => wanted.has(q.section));
+}
+
+function questionToPrompt(q, fallback) {
+  if (!q) return fallback;
+  return {
+    ...fallback,
+    label: q.question || fallback.label,
+    hint: q.hint || fallback.hint,
+    placeholder: q.placeholder || fallback.placeholder,
+    type: q.input_type === "text" ? "text" : fallback.type,
+  };
+}
+
+function buildDynamicMicroGroups(ff, fc, agentQs) {
   const proj = S.selectedProject?.title || "this program";
+  const selectedDuration = S.selectedProject?.duration || "the selected duration";
+  const basicsQs = getSectionQuestions(agentQs, "candidate_info");
+  const scopeQs = getSectionQuestions(agentQs, "candidate_scope", "project_scope");
+  const financialQs = getSectionQuestions(agentQs, "financial");
+  const outcomeQs = getSectionQuestions(agentQs, "outcomes");
+  const leadershipQs = getSectionQuestions(agentQs, "leadership");
+  // field_confidence is not always returned — use value presence as the signal
+  const scopeFilled = !!(ff.scopeAndResponsibilities && String(ff.scopeAndResponsibilities).length > 30);
+  const financialsFilled = ff.gpPercent || ff.revenueActual || (ff.tcvTotal && ff.tcvManaged);
+  const outcomesFilled = ff.projectOutcomes || ff.contractualDeliverables;
+  const leadershipSource = ff.leadershipBehaviors || ff.leadership_behaviors || {};
+  const lbCount = Object.values(leadershipSource).filter(v => v && v !== "â€”").length;
   const groups = [];
 
-  if (!ff.candidateName||!ff.email||!ff.serviceLine) {
+  if (basicsQs.length || !ff.candidateName || !ff.email || !ff.serviceLine) {
     groups.push({ id:"basics", title:"Your Details", priority:"critical",
-      detected: ff.candidateName||null,
+      detected: ff.candidateName || null,
       prompts:[
-        {label:"Full name", required:true, type:"text", prefill:ff.candidateName||"", placeholder:"e.g. Satya Mishra"},
-        {label:"IBM email", required:true, type:"text", prefill:ff.email||"", placeholder:"satya.mishra@ibm.com"},
-        {label:"Service Line", required:true, type:"text", prefill:ff.serviceLine||"", placeholder:"e.g. Hybrid Cloud & Data"},
+        questionToPrompt(basicsQs[0], {label:"Full name", required:true, type:"text", prefill:ff.candidateName||"", placeholder:"e.g. Satya Mishra"}),
+        questionToPrompt(basicsQs[1], {label:"IBM email", required:true, type:"text", prefill:ff.email||"", placeholder:"e.g. firstname.lastname@ibm.com"}),
+        questionToPrompt(basicsQs[2], {label:"Service Line", required:true, type:"text", prefill:ff.serviceLine||"", placeholder:"e.g. Hybrid Cloud & Data"}),
         {label:"Practice / team", required:false, type:"text", prefill:ff.practice||"", placeholder:"e.g. AI & Analytics"},
       ]
     });
   }
 
-  if (!ff.tcvTotal||!ff.tcvManaged||!ff.startDate) {
+  if (!ff.tcvTotal || !ff.tcvManaged || !ff.startDate || !ff.endDate) {
+    const projTcvRaw = S.selectedProject?.tcv || "";
+    const projTcvNum = projTcvRaw.replace(/[^0-9.]/g, "");
+    const tcvPrefill = safeStr(ff.tcvTotal) || (projTcvNum ? projTcvNum : "");
+    const tcvDetected = ff.tcvManaged ? `TCV Managed: ${safeStr(ff.tcvManaged)}`
+                      : projTcvRaw ? `From eligibility: ${projTcvRaw}` : null;
     groups.push({ id:"program_basics", title:"Program Numbers", priority:"critical",
-      detected: ff.tcvManaged?`TCV Managed: ${safeStr(ff.tcvManaged)}`:null,
+      detected: tcvDetected,
       prompts:[
-        {label:"Total program TCV ($M)", required:true, type:"text", prefill:safeStr(ff.tcvTotal), placeholder:"e.g. 8.5"},
-        {label:"TCV you personally managed ($M)", required:true, type:"text", prefill:safeStr(ff.tcvManaged), placeholder:"e.g. 5.2"},
-        {label:"Start date (MM/YYYY)", required:true, type:"text", prefill:safeStr(ff.startDate), placeholder:"e.g. 01/2022"},
-        {label:"End date (MM/YYYY)", required:true, type:"text", prefill:safeStr(ff.endDate), placeholder:"e.g. 12/2023"},
+        {label:"Total program TCV ($M)", required:true, type:"text", prefill:tcvPrefill, placeholder:"e.g. 8.5"},
+        {label:"TCV you personally managed ($M)", required:true, type:"text", prefill:safeStr(ff.tcvManaged) || tcvPrefill, placeholder:"e.g. 5.2"},
+        {label:`Start date for ${proj} (${selectedDuration})`, required:true, type:"text", prefill:safeStr(ff.startDate), placeholder:"e.g. 01/2022"},
+        {label:`End date for ${proj} (${selectedDuration})`, required:true, type:"text", prefill:safeStr(ff.endDate), placeholder:"e.g. 12/2023"},
         {label:"Team size — total FTEs (onshore / offshore / contract)", required:true, type:"text",
-          prefill:ff.fteTotal?`${safeStr(ff.fteTotal)} (${safeStr(ff.fteOnshore)||"?"} onshore, ${safeStr(ff.fteOffshore)||"?"} offshore)`:"",
+          prefill:ff.fteTotal ? `${safeStr(ff.fteTotal)} (${safeStr(ff.fteOnshore)||"?"} onshore, ${safeStr(ff.fteOffshore)||"?"} offshore)` : "",
           placeholder:"e.g. 45 total (10 onshore, 30 offshore, 5 contract)"},
       ]
     });
   }
 
-  groups.push({ id:"candidate_scope", title:`Your Personal Scope on ${proj}`, priority:"critical",
-    detected: ff.scopeAndResponsibilities?"Some scope found in documents":null,
-    prompts:[
-      {label:"What was the program trying to achieve for the client?", required:true, type:"textarea", rows:2,
-        hint:"1-2 sentences on the business goal", prefill:"",
-        placeholder:"e.g. " + proj + " aimed to build a cloud-native digital banking platform replacing legacy systems."},
-      {label:"What did YOU specifically own and deliver?", required:true, type:"textarea", rows:3,
-        hint:"Your scope, your team, your accountability — not the overall project",
-        prefill:safeStr(ff.scopeAndResponsibilities),
-        placeholder:"e.g. I was accountable for end-to-end delivery of 5 journeys across 2 drops. Managed 45 FTEs, financial performance and client relationship."},
-      {label:"Hardest challenge you personally had to solve?", required:true, type:"textarea", rows:2,
-        hint:"One specific situation — what happened, what you did",
-        prefill:"",
-        placeholder:"e.g. Program was in red when I joined. I restructured sprint governance and prioritised the backlog. Moved 2 journeys to UAT within 6 months."},
-    ]
-  });
+  if (scopeQs.length || !scopeFilled) {
+    // Derive a short program-objective from scopeAndResponsibilities (first 2 sentences)
+    const scopeText = safeStr(ff.scopeAndResponsibilities);
+    const inferredObjective = scopeText
+      ? scopeText.split(/\.\s+/).slice(0, 2).join('. ').slice(0, 300) + (scopeText.length > 300 ? '…' : '')
+      : '';
+    // Derive challenge from varianceReason — the agent extracts this from risk/challenge slides
+    const inferredChallenge = safeStr(ff.varianceReason || ff.varianceManagement || '').slice(0, 400);
 
-  groups.push({ id:"financials", title:"Financial Performance", priority:"critical",
-    detected: ff.gpPercent?`GP%: ${safeStr(ff.gpPercent)}`:ff.financialBaseline?"Some financial data found":null,
-    prompts:[
-      {label:"Revenue, Cost, GP, GP% (rough numbers are fine)", required:true, type:"text",
-        hint:"e.g.  Revenue $5M | Cost $3.5M | GP $1.5M | GP% 30%",
-        prefill:ff.revenueActual?`Revenue ${safeStr(ff.revenueActual)} | Cost ${safeStr(ff.costActual)||"—"} | GP ${safeStr(ff.gpActual)||"—"} | GP% ${safeStr(ff.gpPercent)||"—"}`:"",
-        placeholder:"Revenue $5M | Cost $3.5M | GP $1.5M | GP% 30%"},
-      {label:"Within approved price case? (within ~5%)", required:true, type:"text",
-        prefill:"", placeholder:"e.g. Yes, within approved GP. / Recovered from -17% to +31% during tenure."},
-      {label:"Financial tracking system used", required:false, type:"text",
-        prefill:safeStr(ff.financialManagementSystem)||"IBM IPPF", placeholder:"e.g. IBM IPPF monthly + weekly internal burn tracking"},
-    ]
-  });
+    groups.push({ id:"candidate_scope", title:`Your Personal Scope on ${proj}`, priority:"critical",
+      detected: ff.scopeAndResponsibilities ? "Scope found in documents — review and add personal context below" : null,
+      prompts:[
+        questionToPrompt(scopeQs[0], {label:`What was the program trying to achieve for the client during ${selectedDuration}?`, required:true, type:"textarea", rows:2, hint:`Answer only for ${proj}.`, prefill:inferredObjective, placeholder:"1-2 lines on the business goal for the selected program."}),
+        questionToPrompt(scopeQs[1], {label:"What did YOU specifically own and deliver?", required:true, type:"textarea", rows:3, hint:"Your scope, team, and accountability — not the overall client account.", prefill:safeStr(ff.scopeAndResponsibilities), placeholder:"Describe your personal delivery ownership for the selected project."}),
+        questionToPrompt(scopeQs[2], {label:"Hardest challenge you personally had to solve?", required:!scopeQs.length, type:"textarea", rows:2, hint:`Use an example from ${proj} only.`, prefill:inferredChallenge, placeholder:"One situation, what happened, what you did, and what changed."}),
+      ]
+    });
+  }
 
-  groups.push({ id:"outcomes", title:"Outcomes & Results", priority:"critical",
-    detected: ff.projectOutcomes?"Some outcomes found in documents":null,
-    prompts:[
-      {label:"Key delivery milestones achieved", required:true, type:"textarea", rows:2,
-        prefill:safeStr(ff.contractualDeliverables),
-        placeholder:"e.g. 2 journeys to UAT, 3 demo-ready, go-live for T1 & T2, SCADA integration complete"},
-      {label:"Client satisfaction — NPS, CSAT, or any feedback?", required:false, type:"text",
-        prefill:"", placeholder:"e.g. CSAT 9.6/10 average, NPS +42, escalations reduced to zero"},
-      {label:"Business value or savings delivered", required:false, type:"text",
-        prefill:"", placeholder:"e.g. 20+ FTE savings, 30% process improvement, platform ready for 500K users"},
-      {label:"IBM recognition or repeat business?", required:false, type:"text",
-        prefill:safeStr(ff.otherOutcomes), placeholder:"e.g. IBM Delivery Excellence Award, client extended for Phase 2"},
-    ]
-  });
+  if (financialQs.length || !financialsFilled) {
+    groups.push({ id:"financials", title:"Financial Performance", priority:"critical",
+      detected: ff.gpPercent ? `GP%: ${safeStr(ff.gpPercent)}` : ff.financialBaseline ? "Some financial data found" : null,
+      prompts:[
+        questionToPrompt(financialQs[0], {label:`What are the selected project's financials for ${selectedDuration}?`, required:true, type:"text", hint:"Rough numbers are fine if exact figures are not available.", prefill:ff.revenueActual ? `Revenue ${safeStr(ff.revenueActual)} | Cost ${safeStr(ff.costActual)||"â€”"} | GP ${safeStr(ff.gpActual)||"â€”"} | GP% ${safeStr(ff.gpPercent)||"â€”"}` : "", placeholder:"Revenue $5M | Cost $3.5M | GP $1.5M | GP% 30%"}),
+        questionToPrompt(financialQs[1], {label:"Within approved price case? (within ~5%)", required:!!financialQs.length, type:"text", prefill:safeStr(ff.financialVarianceExplanation), placeholder:"e.g. Yes, within approved GP. / Recovered from -17% to +31% during tenure."}),
+        questionToPrompt(financialQs[2], {label:"Financial tracking system used", required:false, type:"text", prefill:safeStr(ff.financialManagementSystem)||"IBM IPPF", placeholder:"e.g. IBM IPPF monthly + weekly internal burn tracking"}),
+      ]
+    });
+  }
 
-  groups.push({ id:"leadership", title:"2–3 Leadership Examples (STAR format)", priority:"important",
-    detected: null,
-    prompts:[
-      {label:"Example 1 — Customer relationship or stakeholder challenge", required:true, type:"textarea", rows:3,
-        hint:"What happened → what YOU did → measurable outcome",
-        prefill:"",
-        placeholder:"e.g. Client threatened to cancel after 2 slipped milestones. I introduced weekly CIO briefings and a transparent recovery plan. Escalations stopped within 4 weeks."},
-      {label:"Example 2 — Problem solving, decision under pressure, or navigating change", required:true, type:"textarea", rows:3,
-        hint:"A decision you made that directly impacted delivery, finances or the team",
-        prefill:"",
-        placeholder:"e.g. CBS dependency caused 6-week delay. I parallelised non-blocked tracks and restructured team. Recovered 4 weeks by quarter end."},
-      {label:"Example 3 — Mentoring, team building or delegation (optional)", required:false, type:"textarea", rows:2,
-        hint:"How you grew someone or handled a team challenge",
-        prefill:"",
-        placeholder:"e.g. Identified under-utilised BA, gave workstream lead role with coaching. He ran independently within 2 months."},
-    ]
-  });
+  if (outcomeQs.length || !outcomesFilled) {
+    groups.push({ id:"outcomes", title:"Outcomes & Results", priority:"critical",
+      detected: ff.projectOutcomes ? "Some outcomes found in documents" : null,
+      prompts:[
+        questionToPrompt(outcomeQs[0], {label:`What were the key results from ${proj}?`, required:true, type:"textarea", rows:2, prefill:safeStr(ff.contractualDeliverables)||safeStr(ff.projectOutcomes), placeholder:"Key milestones, go-lives, measurable delivery results."}),
+        questionToPrompt(outcomeQs[1], {label:"Client satisfaction — NPS, CSAT, or any feedback?", required:false, type:"text", prefill:safeStr(ff.clientSatisfactionScore), placeholder:"e.g. CSAT 9.6/10 average, NPS +42, escalations reduced to zero"}),
+        questionToPrompt(outcomeQs[2], {label:"Business value or savings delivered", required:false, type:"text", prefill:safeStr(ff.businessValue), placeholder:"e.g. 20+ FTE savings, 30% process improvement, platform ready for 500K users"}),
+        questionToPrompt(outcomeQs[3], {label:"IBM recognition or repeat business?", required:false, type:"text", prefill:safeStr(ff.otherOutcomes), placeholder:"e.g. IBM Delivery Excellence Award, client extended for Phase 2"}),
+      ]
+    });
+  }
+
+  // Pre-fill leadership from agent output, or derive client-side as fallback
+  const lbPrefills = getLeadershipPrefills(ff, S.selectedProject);
+
+  // Always show leadership — even when agent found content, user must review and personalise
+  if (true) {
+    groups.push({ id:"leadership", title:"2–3 Leadership Examples (STAR format)", priority:"important",
+      detected: lbCount > 0 ? `${lbCount} behaviour${lbCount>1?"s":""} drafted from documents — review and personalise below` : null,
+      prompts:[
+        questionToPrompt(leadershipQs[0], {label:"Example 1 — Customer relationship or stakeholder challenge", required:true, type:"textarea", rows:3, hint:`Review and personalise — AI has drafted a starting point from your documents.`, prefill:lbPrefills[0], placeholder:"Situation, your action, and measurable outcome."}),
+        questionToPrompt(leadershipQs[1], {label:"Example 2 — Problem solving, decision under pressure, or navigating change", required:true, type:"textarea", rows:3, hint:`Review and personalise — edit to add your own specific numbers and context.`, prefill:lbPrefills[1], placeholder:"Situation, your action, and measurable outcome."}),
+        questionToPrompt(leadershipQs[2], {label:"Example 3 — Mentoring, team building or delegation (optional)", required:false, type:"textarea", rows:2, hint:"Optional — edit or leave blank if covered in examples 1 and 2.", prefill:lbPrefills[2], placeholder:"Team growth, coaching, delegation, or capability building."}),
+      ]
+    });
+  }
 
   return groups;
+}
+
+// ── Leadership prefill helpers ────────────────────────────────────────────────
+// Groups known LB keys into 3 STAR slots: client/stakeholder, problem/change, team/mentoring
+const LB_SLOT = {
+  0: ["Client_focus","customerRelationships","customer","client","stakeholder","negotiation","communication","communicationSkills"],
+  1: ["problemSolving","problemsolving","embracingChange","change","leadership","leadershipskills","delegation","riskManagement"],
+  2: ["Win_as_a_team","collaboration","mentoring","teambuilding","team","delegation","inclusion"],
+};
+
+function condenseLB(text, maxLen = 280) {
+  if (!text || typeof text !== "string") return "";
+  // Take first 2 sentences, capped at maxLen
+  const sentences = text.replace(/\s+/g, " ").trim().match(/[^.!?]+[.!?]+/g) || [text];
+  let out = "";
+  for (const s of sentences) {
+    if ((out + s).length > maxLen) break;
+    out += s + " ";
+  }
+  return out.trim() || text.slice(0, maxLen).trim();
+}
+
+function getLeadershipPrefills(ff, selectedProject) {
+  const lb = ff.leadershipBehaviors || ff.leadership_behaviors || {};
+  const entries = Object.entries(lb).filter(([,v]) => v && typeof v === "string" && v.length > 20);
+
+  // Try to match each slot by key name
+  const slotValues = [null, null, null];
+  for (let slot = 0; slot <= 2; slot++) {
+    const keys = LB_SLOT[slot];
+    for (const [k, v] of entries) {
+      if (keys.some(kw => k.toLowerCase().includes(kw.toLowerCase()))) {
+        slotValues[slot] = condenseLB(v); break;
+      }
+    }
+  }
+
+  // Fill any empty slots from remaining unused entries
+  const used = new Set(slotValues.filter(Boolean));
+  const spare = entries.map(([,v]) => condenseLB(v)).filter(v => !used.has(v));
+  let si = 0;
+  for (let i = 0; i <= 2; i++) {
+    if (!slotValues[i] && spare[si]) slotValues[i] = spare[si++];
+  }
+
+  // Fallback: derive client-side if agent returned nothing
+  if (!slotValues[0] && !slotValues[1]) {
+    const docText = scopeTextForProject(S.labeledText, selectedProject) || S.extractedText || "";
+    const derived = clientDeriveLeadership(docText, ff);
+    for (let i = 0; i <= 2; i++) slotValues[i] = slotValues[i] || derived[i] || "";
+  }
+
+  return slotValues.map(v => v || "");
+}
+
+function clientDeriveLeadership(text, ff) {
+  const t   = text.toLowerCase();
+  const proj = ff.programTitle || ff.clientName || "this engagement";
+  const slot = ["", "", ""];
+
+  // Slot 0 — client / stakeholder
+  if (t.includes("stakeholder") || t.includes("client") || t.includes("csat") || t.includes("relationship"))
+    slot[0] = `Managed a complex stakeholder landscape across ${proj}, ensuring continuous alignment between delivery teams and client leadership on priorities, risks, and outcomes.`;
+
+  // Slot 1 — problem solving / delivery under pressure
+  if (t.includes("risk") || t.includes("issue") || t.includes("escalat") || t.includes("sla") || t.includes("pressure") || t.includes("red"))
+    slot[1] = `Identified and resolved delivery risks and escalations across ${proj}, maintaining SLA performance and financial targets through proactive issue management and structured governance.`;
+
+  // Slot 2 — team / mentoring
+  if (t.includes("team") || t.includes("mentor") || t.includes("coach") || t.includes("capability") || t.includes("fte"))
+    slot[2] = `Built and developed the delivery team across ${proj}, driving capability uplift, knowledge sharing, and team engagement to sustain high performance throughout the engagement.`;
+
+  return slot;
 }
 
 // ── Complexity helper fns ─────────────────────────────────────────────────────
@@ -1975,20 +2573,31 @@ const CF_NAME_MAP = {
 };
 function normaliseCFKey(factorName) {
   const n = (factorName||"").toLowerCase();
-  if (n.includes("first")||n.includes("foak"))   return "foak";
-  if (n.includes("integrat")||n.includes("csi"))  return "csi";
-  if (n.includes("cross")||n.includes("multi"))   return "cbdm";
-  if (n.includes("delivery")||n.includes("proj")) return "pd";
+  if (n.includes("first")||n.includes("foak"))    return "foak";
+  if (n.includes("integrat")||n.includes("csi"))   return "csi";
+  if (n.includes("cross")||n.includes("multi"))    return "cbdm";
+  // ide checked before pd — "Inclusion by Delivery Excellence" contains "delivery"
+  if (n.includes("inclusion")||n.includes("excellence")||n.startsWith("ide")) return "ide";
+  if (n.includes("delivery")||n.includes("proj"))  return "pd";
   if (n.includes("client env")||n.includes("psu")||n.includes("regulat")||n.includes("environ")) return "ce";
   if (n.includes("transform")||n.includes("change")) return "ct";
   if (n.includes("contract")||n.includes("term")||n.includes("commercial")) return "cts";
-  if (n.includes("inclusion")||n.includes("excellence")) return "ide";
   return null;
+}
+
+// ── Scope labeled text to only the selected project's source documents ────────
+function scopeTextForProject(labeledText, selectedProject) {
+  if (!labeledText || !selectedProject?.found_in_docs?.length) return "";
+  const wanted = new Set(selectedProject.found_in_docs.map(n => String(n).trim().toLowerCase()));
+  const sections = labeledText.split(/(?=={20,}[\s\S]*?\[DOCUMENT:)/);
+  return sections
+    .filter(s => { const m = s.match(/\[DOCUMENT:\s*(.+?)\]/); return m && wanted.has(m[1].trim().toLowerCase()); })
+    .join("\n\n").trim();
 }
 
 // ── Client-side keyword-based complexity derivation ───────────────────────────
 // Fallback when agent returns empty complexityFactors.
-// Reads extracted text + known project fields and maps to IBM 8 categories.
+// Only runs against text scoped to the selected project's documents.
 function clientDeriveComplexity(text, projTitle, ff) {
   const t   = text.toLowerCase();
   const pt  = projTitle.toLowerCase();
@@ -1998,73 +2607,51 @@ function clientDeriveComplexity(text, projTitle, ff) {
     {
       key:"foak", name:"First-of-a-Kind (FOAK)",
       signals:["first of its kind","first time","no template","built from scratch","pioneered",
-               "greenfield","replaced the","lvts","large value transfer","moderniz","new payment",
-               "first gbs","foak","payment modernization","new to ibm","new to client"],
-      elab: (t,pt) => {
-        if (t.includes("lvts")||t.includes("large value transfer"))
-          return "Lynx replaced Canada's legacy LVTS system — first national real-time payment rail of this kind in Canada. IBM had not delivered this type of industry-wide payment modernization before.";
-        if (t.includes("moderniz"))
-          return `${projTitle} was a first-of-its-kind modernization initiative with no prior IBM template to follow.`;
-        return `${projTitle} introduced new capabilities not previously delivered at IBM or this client.`;
-      },
-      actions: "Established testing framework and documentation from scratch. Built delivery methodology tailored to the engagement with no prior template to reference.",
+               "greenfield","foak","new to ibm","new to client","never done before",
+               "first for ibm","first for client","no precedent","novel approach"],
+      elab: () => `${projTitle} introduced new capabilities not previously delivered at IBM or this client — there was no prior template or reference delivery to follow.`,
+      actions: "Established the delivery framework and documentation approach from scratch. Built a bespoke methodology tailored to the engagement based on close collaboration with the client.",
     },
     {
       key:"csi", name:"Complex Systems Integration",
-      signals:["multiple systems","interfaces","iso 20022","message format","participant bank",
-               "different tech stack","real.time","real time","api","middleware","integrat",
-               "connect","interoperab","multiple bank","all canadian bank","payment chain"],
-      elab: (t,pt) => {
-        if (t.includes("participant bank")||t.includes("all canadian bank"))
-          return "Lynx required connectivity with all major Canadian financial institutions, each with different tech stacks, message formats, and integration standards. ISO 20022 adoption required validation across all participants simultaneously.";
-        if (t.includes("iso 20022"))
-          return "ISO 20022 message format had to be validated across all participant institutions with different system landscapes.";
-        return `${projTitle} involved integration across multiple systems, vendors and platforms with complex interdependencies.`;
-      },
-      actions: "Structured integration testing in layers — internal SIT first, then cross-bank E2E. Established interface ownership and traceability to quickly identify gaps.",
+      signals:["multiple systems","different tech stack","real.time","real time","api","middleware",
+               "integrat","interoperab","multiple platform","heterogeneous","data pipeline",
+               "bi.*platform","data engineering","multiple vendor","end-to-end data"],
+      elab: () => `${projTitle} involved integration across multiple systems, vendors, and platforms with complex technical interdependencies and data flows requiring careful orchestration.`,
+      actions: "Structured integration testing in layers — component testing first, then cross-system E2E. Established clear interface ownership and traceability to quickly identify and resolve gaps.",
     },
     {
       key:"cbdm", name:"Cross-Brand / Multi-LOB",
       signals:["cross-functional","cross.location","multiple location","onshore.offshore",
                "multiple team","multi.vendor","multiple stakeholder","cross-location",
-               "built and managed teams","teams across location","internal and external"],
-      elab: (t,pt) =>
-        `${projTitle} required coordination across cross-functional and cross-location teams, managing multiple internal and external stakeholders with different priorities and governance processes.`,
-      actions: "Built and managed teams across locations. Established clear communication channels and governance cadence to align all parties.",
+               "built and managed teams","teams across","internal and external",
+               "multiple service line","multi-geo","cross.brand","multi.lob","ams.*ad","ams and ad"],
+      elab: () => `${projTitle} required coordination across cross-functional and cross-location teams, managing multiple internal and external stakeholders with differing priorities and governance processes.`,
+      actions: "Built and managed teams across locations with clear communication channels and governance cadence. Aligned all parties on shared delivery goals and escalation paths.",
     },
     {
       key:"pd", name:"Project Delivery",
-      signals:["national go.live","industry uat","all phases","sprint.*sit.*e2e","end.to.end",
-               "complex requirement","compressed timeline","large scale","multiple phase",
-               "monitor.*scope.*time.*cost","on time and within budget","replaced.*2021"],
-      elab: (t,pt) => {
-        if (t.includes("all canadian")||t.includes("industry uat")||t.includes("national"))
-          return "National-scale delivery with all Canadian banks participating simultaneously in industry UAT. Any single bank delay could impact the entire national go-live. Extremely high-visibility with Bank of Canada oversight.";
-        return `${projTitle} involved large-scale delivery with complex phasing, multiple release types and compressed timelines requiring rigorous delivery governance.`;
-      },
-      actions: "Managed end-to-end delivery across all test phases (Sprint, SIT, E2E, BAT, Performance). Monitored scope, time, cost and quality throughout. Presented weekly progress reports to leadership.",
+      signals:["end.to.end","complex requirement","compressed timeline","large scale","multiple phase",
+               "on time and within budget","fixed price","sla","p&l","portfolio",
+               "~100 fte","100 fte","large team","delivery governance","decommission","upgrade"],
+      elab: () => `${projTitle} involved large-scale delivery with complex phasing, SLA-driven commitments, and compressed timelines requiring rigorous delivery governance and proactive risk management.`,
+      actions: "Managed end-to-end delivery across all phases. Monitored scope, time, cost, and quality throughout. Ran regular leadership reviews and maintained transparent reporting against plan.",
     },
     {
       key:"ce", name:"Client Environment",
-      signals:["bank of canada","regulatory","compliance","regulated","risk and compliance",
-               "sign.off","politics","nobody wanted","careful environment","financial institution",
-               "insurance","banking","government","psu","watched closely"],
-      elab: (t,pt) => {
-        if (t.includes("bank of canada")||t.includes("all canadian bank")||t.includes("participant bank"))
-          return "Regulated banking environment with Bank of Canada oversight. All participant banks had independent risk and compliance sign-off requirements. Political sensitivity was high — no bank wanted to be seen as the cause of a national payment system delay.";
-        if (t.includes("insurance"))
-          return "Highly regulated insurance and banking environment with strict compliance and audit requirements.";
-        return `${projTitle} operated in a regulated financial services environment with complex stakeholder governance and compliance requirements.`;
-      },
-      actions: "Managed each bank's compliance process independently. Maintained transparent communication to prevent individual bank issues from cascading. Escalated proactively to minimise regulatory risk.",
+      signals:["regulatory","compliance","regulated","risk and compliance","sign.off",
+               "stakeholder.*change","insourc","political","sensitive","difficult client",
+               "government","psu","new stakeholder","relationship"],
+      elab: () => `${projTitle} operated in a complex client environment with evolving stakeholder relationships, regulatory or compliance considerations, and internal political dynamics requiring careful navigation.`,
+      actions: "Proactively managed stakeholder changes and relationship shifts. Maintained transparent communication and established trust with new stakeholders while protecting delivery continuity.",
     },
     {
       key:"ct", name:"Client Transformation",
       signals:["transform","moderniz","replaced","legacy","agile","new operating","digital",
-               "change management","new way","adopt","cultural"],
-      elab: (t,pt) =>
-        `${projTitle} represented a major transformation for the client — replacing legacy systems with modern architecture and requiring adoption of new processes across multiple teams and institutions.`,
-      actions: "Managed change through structured communication, documentation of new business flows and collaborative stakeholder engagement throughout the transition.",
+               "change management","new way","adopt","cultural","insource","new platform",
+               "decommission","migration","ai.*adoption","ica adoption"],
+      elab: () => `${projTitle} represented a significant transformation for the client — shifting from legacy approaches to modern platforms and practices, requiring active change management across teams.`,
+      actions: "Managed transformation through structured communication, documented business flows for new ways of working, and collaborative stakeholder engagement throughout the transition.",
     },
   ];
 
@@ -2236,21 +2823,32 @@ function updateComplexityCount() {
   return count;
 }
 
+function getGroupValues(groupId) {
+  return Array.from(document.querySelectorAll(`[id^="mp_${groupId}_"]`))
+    .sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }))
+    .map(el => el.value?.trim() || "")
+    .filter(Boolean);
+}
+
+function getGroupJoined(groupId, fallback = "") {
+  const values = getGroupValues(groupId);
+  return values.length ? values.join(" | ") : fallback;
+}
+
 function updateGateCheck() {
   const ff     = S.agentAnalysis?.filled_fields || {};
   const cfCount = Object.keys(window._cfState||{}).length;
 
-  const scope   = v("mp_candidate_scope_1") || safeStr(ff.scopeAndResponsibilities) || "";
-  const fin     = v("mp_financials_0")      || safeStr(ff.revenueActual) || "";
-  const outcome = v("mp_outcomes_0")        || safeStr(ff.projectOutcomes) || "";
-  const lead1   = v("mp_leadership_0")      || "";
-  const lead2   = v("mp_leadership_1")      || "";
+  const scope   = getGroupJoined("candidate_scope", safeStr(ff.scopeAndResponsibilities) || "");
+  const fin     = getGroupJoined("financials", safeStr(ff.revenueActual) || "");
+  const outcome = getGroupJoined("outcomes", safeStr(ff.projectOutcomes) || "");
+  const leadership = getGroupJoined("leadership", "");
 
   const checks = [
     {label:"Candidate scope described",      pass:scope.length>30,                    icon:"📄"},
     {label:"Financial figures provided",     pass:fin.length>5,                       icon:"💰"},
     {label:"Delivery outcomes mentioned",    pass:outcome.length>20,                  icon:"📈"},
-    {label:"At least 1 leadership example",  pass:lead1.length>20||lead2.length>20,  icon:"🎯"},
+    {label:"At least 1 leadership example",  pass:leadership.length>20,               icon:"🎯"},
     {label:"3+ complexity factors confirmed", pass:cfCount>=3,                        icon:"⚙",
       detail: cfCount<3 ? `${cfCount}/3 — add ${3-cfCount} more above` : `${cfCount} confirmed ✓`},
   ];
@@ -2285,6 +2883,10 @@ function validateAndGenerate() {
 function collectAnswers() {
   const ff = S.agentAnalysis?.filled_fields || {};
   const ans = {};
+  const scopeVals = getGroupValues("candidate_scope");
+  const financialVals = getGroupValues("financials");
+  const outcomeVals = getGroupValues("outcomes");
+  const leadershipVals = getGroupValues("leadership");
 
   ans.candidateName = v("mp_basics_0") || ff.candidateName;
   ans.email         = v("mp_basics_1") || ff.email;
@@ -2297,37 +2899,120 @@ function collectAnswers() {
   ans.endDate    = v("mp_program_basics_3") || ff.endDate;
   ans.fteRaw     = v("mp_program_basics_4") || ff.fteTotal;
 
-  ans.program_goal      = v("mp_candidate_scope_0");
-  ans.candidate_scope   = v("mp_candidate_scope_1");
-  ans.candidate_challenge = v("mp_candidate_scope_2");
+  ans.program_goal        = scopeVals[0] || "";
+  ans.candidate_scope     = scopeVals[1] || scopeVals[0] || "";
+  ans.candidate_challenge = scopeVals[2] || "";
 
-  ans.financial_summary  = v("mp_financials_0");
-  ans.financial_variance = v("mp_financials_1");
-  ans.financial_system   = v("mp_financials_2");
+  ans.financial_summary  = financialVals.join(" | ");
+  ans.financial_variance = financialVals[1] || "";
+  ans.financial_system   = financialVals[2] || ff.financialManagementSystem || "";
 
-  ans.outcome_milestones   = v("mp_outcomes_0");
-  ans.outcome_csat         = v("mp_outcomes_1");
-  ans.outcome_value        = v("mp_outcomes_2");
-  ans.outcome_recognition  = v("mp_outcomes_3");
+  ans.outcome_milestones   = outcomeVals[0] || "";
+  ans.outcome_csat         = outcomeVals[1] || "";
+  ans.outcome_value        = outcomeVals[2] || "";
+  ans.outcome_recognition  = outcomeVals[3] || "";
 
-  ans.leadership_star1 = v("mp_leadership_0");
-  ans.leadership_star2 = v("mp_leadership_1");
-  ans.leadership_star3 = v("mp_leadership_2");
+  ans.leadership_star1 = leadershipVals[0] || "";
+  ans.leadership_star2 = leadershipVals[1] || "";
+  ans.leadership_star3 = leadershipVals[2] || "";
 
   // Complexity — read from _cfState (AI-derived + candidate-added/edited)
-  ans.complexityFactors = Object.values(window._cfState || {})
-    .filter(c => c.factor)
+  // Fall back to agent analysis filled_fields if user hasn't interacted with the UI
+  const cfFromState = Object.values(window._cfState || {})
+    .filter(c => c.factor || c.name)
     .map(c => ({
       factor:      c.name || c.factor,
       elaboration: c.elaboration || "",
       actions:     c.actions     || "",
-    }))
-    .filter(c => c.elaboration || c.actions);
+    }));
+  const cfFallback = (ff.complexityFactors || [])
+    .filter(c => c && (c.factor || c.name))
+    .map(c => ({ factor: c.factor || c.name, elaboration: c.elaboration || "", actions: c.actions || "" }));
+  // Keep any factor that has a name — agent needs the full list even if elaboration is thin
+  ans.complexityFactors = (cfFromState.length ? cfFromState : cfFallback)
+    .filter(c => c.factor);
 
   return ans;
 }
 
 
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Complexity factor merge: always preserves canonical IBM category names from
+// _cfState / Mode 1; overlays Mode 2's enhanced text where available.
+//
+// Strategy (in order):
+//   A) Mode 2 output has proper named factors → use as-is
+//   B) Mode 2 has content but no names, same count as named source → positional merge
+//   C) Mode 2 has content but no names, different count → keyword-match to named source
+//   D) Mode 2 has nothing useful → use named source (form state / Mode 1)
+// ─────────────────────────────────────────────────────────────────────────────
+function mergeComplexityFactors(mode2cf, formCF, analysisCF) {
+  // Canonical named source: gap form (_cfState) preferred over Mode 1 analysis
+  const named = (formCF?.length ? formCF : analysisCF || [])
+    .filter(c => (c.factor || c.name || "").trim().length > 1);
+
+  // Mode 2 factor has a real name if it's non-empty and not a dash placeholder
+  const isNamed = c => {
+    const n = (c.factor || c.name || "").trim();
+    return n.length > 2 && n !== "—";
+  };
+
+  // Case A: Mode 2 returned properly named factors
+  if (Array.isArray(mode2cf) && mode2cf.length > 0 && mode2cf.some(isNamed)) {
+    // Still need to ensure every item has a name — fill blanks from named source by position
+    return mode2cf.map((c, i) => isNamed(c) ? c : {
+      ...c,
+      factor: named[i]?.factor || named[i]?.name || c.factor || "",
+    });
+  }
+
+  // No named source — return whatever Mode 2 has (best effort)
+  if (!named.length) return Array.isArray(mode2cf) && mode2cf.length ? mode2cf : [];
+
+  // Case B: Mode 2 has content but no names — merge by position if counts match
+  if (Array.isArray(mode2cf) && mode2cf.length > 0 && mode2cf.length === named.length) {
+    return named.map((nf, i) => ({
+      factor:      nf.factor || nf.name,
+      elaboration: mode2cf[i].elaboration || mode2cf[i].description || nf.elaboration || "",
+      actions:     mode2cf[i].actions     || mode2cf[i].mitigations  || nf.actions     || "",
+    }));
+  }
+
+  // Case C: Mode 2 has content, count mismatch — match by keyword search
+  if (Array.isArray(mode2cf) && mode2cf.length > 0) {
+    const CF_KEYWORDS = {
+      foak: ["first","foak","novel","greenfield","no template","new capability"],
+      csi:  ["integrat","systems","platform","vendor","api","middleware","pipeline"],
+      cbdm: ["cross","brand","multi","lob","service line","geograph"],
+      pd:   ["project","delivery","timeline","team","scale","fixed price","agile"],
+      ce:   ["client env","psu","government","regulat","political","stakeholder"],
+      ct:   ["transform","change","operating model","culture","technology landscape"],
+      cts:  ["contract","term","commercial","risk.reward","sla","outcome.based"],
+      ide:  ["inclusion","excellence","diversity","partner","associate","ide"],
+    };
+    const used = new Set();
+    return named.map(nf => {
+      const id = normaliseCFKey(nf.factor || nf.name || "");
+      const kws = CF_KEYWORDS[id] || [];
+      const m2match = mode2cf.find((m, mi) => {
+        if (used.has(mi)) return false;
+        const txt = ((m.elaboration||"")+" "+(m.actions||"")+" "+(m.description||"")).toLowerCase();
+        return kws.some(kw => txt.includes(kw));
+      });
+      const mi = mode2cf.indexOf(m2match);
+      if (m2match && mi >= 0) used.add(mi);
+      return {
+        factor:      nf.factor || nf.name,
+        elaboration: m2match?.elaboration || m2match?.description || nf.elaboration || "",
+        actions:     m2match?.actions     || m2match?.mitigations  || nf.actions     || "",
+      };
+    });
+  }
+
+  // Case D: Mode 2 has nothing useful — return named source unchanged
+  return named;
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STEP 6: Agent complete
@@ -2358,12 +3043,18 @@ async function runComplete() {
     clearInterval(tick); prog.style.width="100%"; prog.classList.add("complete");
     setConn("connected","Agentic Studio — Connected");
     addStepLog("completeLog",`✅ Draft complete — quality: ${result.draft_quality_score||0}%`,"success");
-    S.finalData=result; markDone(5); markDone(6);
+    if (!result.filled_fields) result.filled_fields = {};
+    result.filled_fields.complexityFactors = mergeComplexityFactors(
+      result.filled_fields.complexityFactors,
+      answers.complexityFactors,
+      S.agentAnalysis?.filled_fields?.complexityFactors
+    );
+    S.finalData=result; saveSession(); markDone(5); markDone(6);
     await delay(600); renderScoring(result);
   } catch(err) {
     clearInterval(tick); setConn("disconnected","Agentic Studio — Error");
     msg.textContent="Error"; addStepLog("completeLog",`❌ ${err.message}`,"error");
-    document.getElementById("completeLog").innerHTML+=`<div style="margin-top:var(--s4)"><div class="cds-notification cds-notification-error"><span class="notif-icon">✕</span><div>${err.message}</div></div><button class="cds-btn cds-btn-ghost" style="margin-top:var(--s3)" onclick="goTo(5)">← Try Again</button></div>`;
+    document.getElementById("completeLog").innerHTML += renderLangflowErrorBanner(err, "runComplete()", "← Back to Questions", "goTo(5)");
   }
 }
 
@@ -2410,13 +3101,19 @@ function renderScoring(result) {
       [!!(d.varianceReason),2,"Variance explanation missing"],
       [!!(d.commercialConstruct),1,"Commercial construct not described"],
     ]),
-    scoreSection("Leadership Behaviours","",[
-      [!!(d.leadershipBehaviors?.customerRelationships),1,"Customer Relationships missing"],
-      [!!(d.leadershipBehaviors?.negotiation),1,"Negotiation missing"],
-      [!!(d.leadershipBehaviors?.problemSolving),1,"Problem Solving missing"],
-      [!!(d.leadershipBehaviors?.mentoring),2,"Mentoring missing — mandatory for SCPM"],
-      [!!(d.leadershipBehaviors?.leadership),1,"Leadership missing"],
-    ]),
+    ...(()=>{
+      const lb   = d.leadershipBehaviors || {};
+      const vals = Object.values(lb).filter(v => v && typeof v === "string" && v.length > 20);
+      const hasClient  = vals.some(v => /client|stakeholder|customer|relationship|communic/i.test(v));
+      const hasProb    = vals.some(v => /problem|risk|escalat|decision|pressure|change|navigat/i.test(v));
+      const hasMentor  = vals.some(v => /mentor|team|delegat|coach|capability|build/i.test(v));
+      const totalFilled = vals.length;
+      return [scoreSection("Leadership Behaviours","",[
+        [totalFilled >= 1 || hasClient,                       2, "No leadership examples found — add at least 1 in the gap form"],
+        [totalFilled >= 2 || (hasClient && hasProb),          2, "Only 1 leadership example — add a second covering problem-solving or change"],
+        [hasMentor || totalFilled >= 3,                       2, "Mentoring / team-building example missing — recommended for a strong profile"],
+      ])];
+    })(),
     scoreSection("Complexity Factors","",[
       [!!(Array.isArray(d.complexityFactors)&&d.complexityFactors.length>=2),4,"Need at least 2 complexity factors (3 for CPM)"],
       [!!(Array.isArray(d.complexityFactors)&&d.complexityFactors.some(c=>c.elaboration&&String(c.elaboration).length>50)),3,"Complexity descriptions too brief"],
@@ -2471,11 +3168,21 @@ function renderReview(result) {
           Quality: <strong>${result.draft_quality_score||"—"}%</strong> — ${result.draft_quality_note||"Ready to export."}
          </div></div>`;
 
-  // Edit hint
-  const editHint = `<div class="cds-notification cds-notification-info" style="margin-bottom:var(--s4)">
+  // AI disclaimer + edit hint
+  const editHint = `
+  <div class="cds-notification cds-notification-warning" style="margin-bottom:var(--s3)">
+    <span class="notif-icon">⚠</span>
+    <div class="notif-body">
+      <strong>AI-generated content — review before submitting.</strong>
+      All sections below were drafted by AI from your uploaded documents and answers.
+      Narratives, leadership examples, and complexity descriptions are starting points — not final.
+      <strong>Please read each section carefully, correct any inaccuracies, and add your own specific numbers and context before exporting.</strong>
+    </div>
+  </div>
+  <div class="cds-notification cds-notification-info" style="margin-bottom:var(--s4)">
     <span class="notif-icon">✏</span>
-    <div class="notif-body"><strong>You can edit any field directly.</strong>
-    Click on any value below to edit it inline. Changes are saved automatically before export.</div>
+    <div class="notif-body"><strong>Click any value below to edit it inline.</strong>
+    Changes are saved automatically before export.</div>
   </div>`;
 
   // Non-editable simple fields
@@ -2508,14 +3215,24 @@ function renderReview(result) {
       ["Commercial Construct",d.commercialConstruct],
     ]),
     simpleSection("🎯 Leadership Behaviours",
-      Object.entries(lb).map(([k,val])=>[k.replace(/([A-Z])/g," $1").replace(/^./,c=>c.toUpperCase()),val])
+      Object.entries(lb)
+        .filter(([,val]) => val)
+        .map(([k,val]) => {
+          const label = k.replace(/_/g," ").replace(/([A-Z])/g," $1").replace(/^./,c=>c.toUpperCase()).trim();
+          const text  = typeof val === "string" ? val : (val?.text || val?.description || JSON.stringify(val));
+          return [label, text];
+        })
     ),
     `<div class="review-group">
       <div class="review-group-title">⚙ Complexity Factors</div>
-      ${cf.length?cf.map(c=>`<div class="review-row">
-        <div class="review-key">${c.factor}</div>
-        <div class="review-val" contenteditable="true" onblur="saveComplexityEdit(this,'${c.factor}')" title="Click to edit">${c.elaboration||"—"}<br><br><strong>Actions:</strong> ${c.actions||"—"}</div>
-      </div>`).join("")
+      ${cf.length?cf.map(c=>{
+        const name = c.factor || c.name || "—";
+        const safeN = name.replace(/'/g,"\\'");
+        return `<div class="review-row">
+          <div class="review-key">${name}</div>
+          <div class="review-val" contenteditable="true" onblur="saveComplexityEdit(this,'${safeN}')" title="Click to edit">${c.elaboration||"—"}<br><br><strong>Actions:</strong> ${c.actions||"—"}</div>
+        </div>`;
+      }).join("")
       :'<div class="review-row"><div class="review-key">—</div><div class="review-val" style="color:var(--cds-text-placeholder)">No complexity factors added</div></div>'}
     </div>`,
     simpleSection("📈 Project Outcomes",[
@@ -2564,7 +3281,7 @@ function saveEdit(el, fieldKey) {
 function saveComplexityEdit(el, factorName) {
   if (!S.finalData?.filled_fields?.complexityFactors) return;
   const cf = S.finalData.filled_fields.complexityFactors;
-  const row = cf.find(c=>c.factor===factorName);
+  const row = cf.find(c => (c.factor || c.name) === factorName);
   if (row) {
     const text = el.innerText;
     const actionSplit = text.split(/actions?:/i);
@@ -2594,7 +3311,7 @@ async function exportDoc() {
         <strong>Document saved successfully</strong><br>
         ${res.filePath}
         <div style="margin-top:var(--s3);display:flex;gap:var(--s3)">
-          <button class="cds-btn cds-btn-primary" onclick="window.cpmAPI?.openFile('${res.filePath}')">Open Document</button>
+          <button class="cds-btn cds-btn-primary" onclick="window.cpmAPI?.openFile('${res.filePath.replace(/\\/g,'\\\\')}')">Open Document</button>
           <button class="cds-btn cds-btn-ghost" onclick="startPackage2()">Start Package 2 →</button>
         </div>
       </div>
@@ -2610,26 +3327,13 @@ function startPackage2() {
   S.selectedProject = null;
   S.agentAnalysis = null;
   S.finalData = null;
+  clearSession();
   [2,3,4,5,6,7,8].forEach(n=>{
     const b=document.getElementById(`nav${n}`);
     if(b){ b.classList.remove("done","active"); b.classList.add("locked"); b.onclick=null; }
   });
   addLog("info","Starting Package 2 — same documents, new program selection");
   renderProjectSelection({ projects:S.detectedProjects, recommendation:null, recommendation_reason:"" });
-}
-
-// ── Config ────────────────────────────────────────────────────────────────────
-function openConfig() {
-  document.getElementById("cfg_key").value = S.apiKey;
-  document.getElementById("configModal").classList.add("open");
-}
-function closeConfig() { document.getElementById("configModal").classList.remove("open"); }
-function saveConfig() {
-  S.apiKey = document.getElementById("cfg_key").value.trim();
-  localStorage.setItem("cpm_key", S.apiKey);
-  updateConn();
-  closeConfig();
-  addLog("info", `API key ${S.apiKey ? "saved (" + S.apiKey.length + " chars)" : "cleared"}`);
 }
 
 // ── Mocks ─────────────────────────────────────────────────────────────────────
