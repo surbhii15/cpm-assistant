@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: 22
       
-      - run: npm install
+      - run: npm ci
 
       - name: Build macOS (unsigned)
         env:

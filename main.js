@@ -205,6 +205,7 @@ If a document mentions the same client but outside the selected project or outsi
     instructions:
       "Generate follow-up questions only for facts you could not derive from the selected project's documents. " +
       "Do not ask generic repeat questions. If the documents already answer something, even partially, fill it instead of asking. " +
+      "For serviceLine and practice, copy only values explicitly present in the documents; otherwise leave them empty and ask in the gap questions. " +
       "If a value is not found, return null or an empty field value — never write placeholders like Unknown, Not stated, Not provided, or Not found. " +
       "Return compact valid JSON only. Keep every string concise, avoid long paragraphs, and cap the total response to roughly 12,000 characters. " +
       "Summarize leadership, outcomes, org structure, and financial narratives briefly rather than exhaustively.",
@@ -244,8 +245,9 @@ ipcMain.handle("agent-complete", async (event, { filledFields, answers, apiKey }
     answers,
     instructions:
       "Merge answers into filled_fields. Enhance all content to professional CPM submission " +
-      "quality using IBM CPM language. Map complexity to IBM official categories. " +
-      "Write leadership behaviors as STAR examples. Return complete JSON.",
+      "quality using IBM CPM language. Map complexity only to the embedded official complexity category names and include only factors supported by evidence. " +
+      "Use evidence internally, but write candidate-facing complexity prose without meta references to documents or source evidence. " +
+      "Write leadership behaviors as structured examples using the embedded Behaviours.pdf guidance; map each example to the correct behaviour and include what I did plus value/result/impact. Do not invent unsupported facts. Write all candidate narratives in first person voice using I. Return complete JSON.",
   };
   try {
     const t0 = Date.now();
@@ -271,7 +273,7 @@ ipcMain.handle("agent-autofill", async (event, { filledFields, currentAnswers, e
       "Given the filled fields and current user answers, infer and suggest concise professional " +
       "values for each field listed in empty_field_keys. Return a JSON object with key " +
       "'suggested_fields' mapping each field label to its suggested value. Only suggest " +
-      "fields where the existing context clearly supports an inference.",
+      "fields where the existing context clearly supports an inference. Do not suggest Service Line or Practice unless the exact value is explicitly present in the documents.",
   };
   try {
     const t0 = Date.now();

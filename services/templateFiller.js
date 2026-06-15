@@ -212,13 +212,13 @@ function buildReplacements(d) {
   };
 
   const foak = findCF("first","foak");
-  const csi  = findCF("integrat","csi","system");
-  const cbdm = findCF("cross","multi","brand");
+  const csi  = findCF("integrat","csi","system","interface","migration");
+  const cbdm = findCF("cross","brand","multi-lob","watson","cloud","consulting");
   const pd   = findCF("project del","delivery");
   const ce   = findCF("client env","environ","psu","regulat");
   const ct   = findCF("transform","change");
-  const cts  = findCF("contract","term","commercial","cts");
-  const ide  = findCF("inclusion","excellence","ide");
+  const cts  = findCF("contract","term","structure","commercial","cts","pcr","penalt");
+  const ide  = findCF("inclusion","quality","sdl","partner","excellence","ide");
 
   // Financial — use null-check (not falsy ||) so 0 is kept, not replaced with NV
   const fin = (v) => (v != null && v !== "") ? v : NV;
@@ -408,7 +408,7 @@ function updateCoreProps(zip, data) {
   core = core
     .replace(/<dc:title>[\s\S]*?<\/dc:title>/,     `<dc:title>${title}</dc:title>`)
     .replace(/<dc:creator>[\s\S]*?<\/dc:creator>/,  `<dc:creator>${sanitise(data.candidateName||"")}</dc:creator>`)
-    .replace(/<cp:lastModifiedBy>[\s\S]*?<\/cp:lastModifiedBy>/, `<cp:lastModifiedBy>CPM Assistant</cp:lastModifiedBy>`)
+    .replace(/<cp:lastModifiedBy>[\s\S]*?<\/cp:lastModifiedBy>/, `<cp:lastModifiedBy>CPM agent</cp:lastModifiedBy>`)
     .replace(/<dcterms:modified[^>]*>[\s\S]*?<\/dcterms:modified>/, `<dcterms:modified xsi:type="dcterms:W3CDTF">${now}</dcterms:modified>`);
   zip.updateFile("docProps/core.xml", Buffer.from(core, "utf8"));
 }
